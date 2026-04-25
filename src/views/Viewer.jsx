@@ -5,10 +5,12 @@ import { getPalette } from "../templates/palettes";
 import { getDecoration } from "../components/decorations";
 import { getReveal } from "../components/animations";
 import Burst from "../components/Burst";
+import Typewriter from "../components/Typewriter";
 
 export default function Viewer({ data }) {
   const [opened, setOpened] = useState(false);
   const [flipped, setFlipped] = useState(false);
+  const [hasFlipped, setHasFlipped] = useState(false);
   const tpl = getTemplate(data.t);
   const coverPal = getPalette(tpl.cover.palette);
   const insidePal = getPalette(tpl.inside.palette);
@@ -58,7 +60,11 @@ export default function Viewer({ data }) {
                     : "Hello,"}
                 </div>
                 <p className={`relative mt-4 flex-1 overflow-auto whitespace-pre-wrap text-lg leading-relaxed ${tpl.inside.font}`}>
-                  {data.m}
+                  {flipped && !hasFlipped ? (
+                    <Typewriter text={data.m} onDone={() => setHasFlipped(true)} />
+                  ) : (
+                    data.m
+                  )}
                 </p>
                 {data.f && (
                   <div className={`relative mt-4 text-right italic ${insidePal.accent}`}>
