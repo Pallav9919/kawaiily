@@ -307,6 +307,87 @@ export const TEMPLATES = [
     inside: { palette: "indigo", decoration: "none", font: "font-devanagari" },
     reveal: "fade",
   },
+
+  // ---------- MORE LOVE VARIETY ----------
+  {
+    id: "love-forever",
+    name: "Forever Yours",
+    category: "love",
+    lang: "en",
+    cover: {
+      palette: "amber",
+      decoration: "hearts",
+      titleFont: "font-playfair",
+      title: "Forever Yours",
+      emoji: "💫",
+    },
+    inside: { palette: "amber", decoration: "none", font: "font-caveat" },
+    reveal: "fade",
+  },
+  {
+    id: "love-anniversary",
+    name: "Happy Anniversary",
+    category: "love",
+    lang: "en",
+    cover: {
+      palette: "rose",
+      decoration: "petals",
+      titleFont: "font-dancing",
+      title: "Happy Anniversary",
+      emoji: "💞",
+    },
+    inside: { palette: "rose", decoration: "none", font: "font-caveat" },
+    reveal: "rise",
+  },
+
+  // ---------- MORE BIRTHDAY ----------
+  {
+    id: "bday-minimal",
+    name: "Another Year",
+    category: "birthday",
+    lang: "en",
+    cover: {
+      palette: "mint",
+      decoration: "stars",
+      titleFont: "font-playfair",
+      title: "Another Year Wiser",
+      emoji: "🍰",
+    },
+    inside: { palette: "mint", decoration: "none", font: "font-caveat" },
+    reveal: "fade",
+  },
+  {
+    id: "bday-milestone",
+    name: "Big Day",
+    category: "birthday",
+    lang: "en",
+    cover: {
+      palette: "lavender",
+      decoration: "confetti",
+      titleFont: "font-dancing",
+      title: "It's Your Big Day!",
+      emoji: "🥳",
+    },
+    inside: { palette: "lavender", decoration: "none", font: "font-caveat" },
+    reveal: "burst",
+  },
+
+  // ---------- MORE FRIENDSHIP ----------
+  {
+    id: "friend-thanks-being-there",
+    name: "Thanks for Being You",
+    category: "friendship",
+    lang: "en",
+    cover: {
+      palette: "sunset",
+      decoration: "stars",
+      titleFont: "font-dancing",
+      title: "Thanks for Being You",
+      emoji: "💛",
+    },
+    inside: { palette: "sunset", decoration: "none", font: "font-caveat" },
+    reveal: "fade",
+  },
 ];
 
 export const getTemplate = (id) =>
