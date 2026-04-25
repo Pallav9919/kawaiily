@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Analytics } from "@vercel/analytics/react";
 import Editor from "./views/Editor";
 import Viewer from "./views/Viewer";
 import MadeBy from "./components/MadeBy";
@@ -22,6 +23,7 @@ export default function App() {
     <>
       {data && data.m ? <Viewer data={data} /> : <Editor />}
       <MadeBy />
+      <Analytics />
     </>
   );
 }
