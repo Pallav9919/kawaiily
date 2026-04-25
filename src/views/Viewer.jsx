@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { track } from "@vercel/analytics";
 import { getTemplate } from "../templates/registry";
 import { getPalette } from "../templates/palettes";
 import { getDecoration } from "../components/decorations";
@@ -13,16 +12,6 @@ export default function Viewer({ data }) {
   const [flipped, setFlipped] = useState(false);
   const [hasFlipped, setHasFlipped] = useState(false);
   const tpl = getTemplate(data.t);
-
-  // Track the open (fires once per viewer load)
-  useEffect(() => {
-    track("card_viewed", {
-      template: tpl.id,
-      category: tpl.category,
-      lang: tpl.lang,
-      messageLength: data.m?.length ?? 0,
-    });
-  }, [tpl.id, tpl.category, tpl.lang, data.m]);
   const coverPal = getPalette(tpl.cover.palette);
   const insidePal = getPalette(tpl.inside.palette);
   const CoverDeco = getDecoration(tpl.cover.decoration);
@@ -34,27 +23,13 @@ export default function Viewer({ data }) {
       <div className="relative flex flex-col items-center">
         <AnimatePresence mode="wait">
           {!opened ? (
-            <Envelope
-              key="envelope"
-              onOpen={() => {
-                setOpened(true);
-                track("envelope_opened", { template: tpl.id });
-              }}
-            />
+            <Envelope key="envelope" onOpen={() => setOpened(true)} />
           ) : (
             <motion.div key="card" {...reveal} className="relative perspective">
               <Burst />
             <motion.div
               className="preserve-3d relative h-[520px] w-[340px] cursor-pointer sm:h-[560px] sm:w-[380px]"
-              onClick={() => {
-                setFlipped((f) => {
-                  const next = !f;
-                  if (next && !hasFlipped) {
-                    track("card_flipped_first_time", { template: tpl.id });
-                  }
-                  return next;
-                });
-              }}
+              onClick={() => setFlipped((f) => !f)}
               animate={{ rotateY: flipped ? 180 : 0 }}
               transition={{ duration: 0.9, ease: [0.4, 0.1, 0.2, 1] }}
             >
@@ -107,7 +82,6 @@ export default function Viewer({ data }) {
 
         <a
           href={window.location.pathname}
-          onClick={() => track("cta_create_your_own", { template: tpl.id })}
           className="mt-8 text-sm text-white/70 underline hover:text-white"
         >
           Create your own ✨
