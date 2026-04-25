@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { TEMPLATES } from "../templates/registry";
 import { getPalette } from "../templates/palettes";
@@ -14,6 +14,9 @@ export default function Editor() {
   const [message, setMessage] = useState("");
   const [url, setUrl] = useState("");
   const [copied, setCopied] = useState(false);
+  const formRef = useRef(null);
+  const messageRef = useRef(null);
+  const [highlighted, setHighlighted] = useState(false);
 
   const filtered = useMemo(
     () => (category === "all" ? TEMPLATES : TEMPLATES.filter((t) => t.category === category)),
@@ -33,6 +36,18 @@ export default function Editor() {
       setTemplateId(filtered[0].id);
     }
   }, [filtered, templateId]);
+
+  const selectTemplate = (id) => {
+    setTemplateId(id);
+    // Scroll the form into view and focus the message textarea
+    requestAnimationFrame(() => {
+      formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      // Let scroll settle, then focus
+      setTimeout(() => messageRef.current?.focus({ preventScroll: true }), 450);
+    });
+    setHighlighted(true);
+    setTimeout(() => setHighlighted(false), 1200);
+  };
 
   const generate = () => {
     setUrl(buildShareUrl({ t: templateId, f: from, to, m: message }));
@@ -99,13 +114,18 @@ export default function Editor() {
                 key={t.id}
                 template={t}
                 selected={templateId === t.id}
-                onSelect={() => setTemplateId(t.id)}
+                onSelect={() => selectTemplate(t.id)}
               />
             ))}
           </div>
         </section>
 
-        <section className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
+        <section
+          ref={formRef}
+          className={`scroll-mt-4 rounded-2xl bg-white p-6 shadow-sm ring-1 transition-all duration-500 ${
+            highlighted ? "ring-rose-400 ring-2 shadow-lg" : "ring-slate-200"
+          }`}
+        >
           <div className="grid gap-4 sm:grid-cols-2">
             <Field label="To" value={to} onChange={setTo} placeholder="Their name" />
             <Field label="From" value={from} onChange={setFrom} placeholder="Your name" />
@@ -113,6 +133,7 @@ export default function Editor() {
           <div className="mt-4">
             <label className="mb-1 block text-sm font-medium text-slate-700">Message</label>
             <textarea
+              ref={messageRef}
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               rows={5}
