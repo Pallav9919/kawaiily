@@ -8,6 +8,7 @@ import { buildShareUrl } from "../lib/hash";
 
 export default function Editor() {
   const [category, setCategory] = useState("all");
+  const [query, setQuery] = useState("");
   const [templateId, setTemplateId] = useState(TEMPLATES[0].id);
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
@@ -18,10 +19,18 @@ export default function Editor() {
   const messageRef = useRef(null);
   const [highlighted, setHighlighted] = useState(false);
 
-  const filtered = useMemo(
-    () => (category === "all" ? TEMPLATES : TEMPLATES.filter((t) => t.category === category)),
-    [category]
-  );
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return TEMPLATES.filter((t) => {
+      if (category !== "all" && t.category !== category) return false;
+      if (!q) return true;
+      return (
+        t.name.toLowerCase().includes(q) ||
+        t.cover.title.toLowerCase().includes(q) ||
+        t.category.toLowerCase().includes(q)
+      );
+    });
+  }, [category, query]);
 
   const canGenerate = message.trim().length > 0;
 
@@ -105,19 +114,43 @@ export default function Editor() {
               </button>
             ))}
           </div>
+          <div className="relative mt-3">
+            <input
+              type="search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search templates…"
+              className="w-full rounded-lg border border-slate-200 bg-white px-4 py-2 pr-9 text-base text-slate-800 outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-200"
+            />
+            {query && (
+              <button
+                onClick={() => setQuery("")}
+                aria-label="Clear search"
+                className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full px-2 py-0.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600"
+              >
+                ×
+              </button>
+            )}
+          </div>
         </section>
 
         <section className="mb-6">
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-            {filtered.map((t) => (
-              <TemplateCard
-                key={t.id}
-                template={t}
-                selected={templateId === t.id}
-                onSelect={() => selectTemplate(t.id)}
-              />
-            ))}
-          </div>
+          {filtered.length === 0 ? (
+            <div className="rounded-xl bg-white p-8 text-center text-slate-500 ring-1 ring-slate-200">
+              No templates match “{query}”. Try a different word or clear the search.
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+              {filtered.map((t) => (
+                <TemplateCard
+                  key={t.id}
+                  template={t}
+                  selected={templateId === t.id}
+                  onSelect={() => selectTemplate(t.id)}
+                />
+              ))}
+            </div>
+          )}
         </section>
 
         <section
