@@ -94,7 +94,7 @@ export default function Viewer({ data }) {
 function Face({ children, className, back }) {
   return (
     <div
-      className={`absolute inset-0 backface-hidden overflow-hidden rounded-2xl shadow-2xl ${className}`}
+      className={`absolute inset-0 backface-hidden overflow-hidden rounded-2xl ring-1 ring-black/5 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)] ${className}`}
       style={{ transform: back ? "rotateY(180deg)" : "none" }}
     >
       {children}

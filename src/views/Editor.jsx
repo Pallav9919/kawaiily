@@ -182,7 +182,7 @@ function TemplateCard({ template, selected, onSelect }) {
       whileHover={{ y: -4 }}
       whileTap={{ scale: 0.97 }}
       onClick={onSelect}
-      className={`relative aspect-[3/4] overflow-hidden rounded-xl p-3 text-left shadow-md ring-2 transition ${pal.cover} ${
+      className={`relative aspect-[3/4] overflow-hidden rounded-xl p-3 text-left shadow-md ring-2 transition hover:shadow-xl ${pal.cover} ${
         selected ? "ring-slate-900" : "ring-transparent"
       }`}
     >
