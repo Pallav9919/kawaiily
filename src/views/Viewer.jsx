@@ -100,7 +100,7 @@ function Envelope({ onOpen }) {
   const handleTap = () => {
     if (opening) return;
     setOpening(true);
-    setTimeout(onOpen, 700); // let flap animation finish first
+    setTimeout(onOpen, 800);
   };
 
   return (
@@ -109,66 +109,64 @@ function Envelope({ onOpen }) {
       initial={{ scale: 0.9, opacity: 0 }}
       animate={
         opening
-          ? { scale: 0.95, opacity: 0, y: 20 }
+          ? { scale: 1, opacity: 1 }
           : { scale: 1, opacity: 1, y: [0, -6, 0] }
       }
       transition={
         opening
-          ? { duration: 0.5, delay: 0.4 }
+          ? { duration: 0.3 }
           : {
               scale: { duration: 0.4 },
               opacity: { duration: 0.4 },
               y: { duration: 3, repeat: Infinity, ease: "easeInOut" },
             }
       }
+      exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.4, delay: 0.2 } }}
       whileTap={!opening ? { scale: 0.96 } : {}}
-      exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.3 } }}
-      className="relative"
       aria-label="Open envelope"
+      className="relative h-[220px] w-[340px] sm:h-[240px] sm:w-[380px]"
+      style={{ perspective: 1200 }}
     >
-      <svg
-        viewBox="0 0 340 220"
-        className="h-[220px] w-[340px] drop-shadow-2xl sm:h-[240px] sm:w-[380px]"
-      >
-        {/* envelope body */}
-        <rect x="10" y="30" width="320" height="180" rx="6" fill="#fecdd3" />
-        {/* left & right inside flaps */}
-        <polygon points="10,30 170,140 10,210" fill="#fda4af" />
-        <polygon points="330,30 170,140 330,210" fill="#fda4af" />
-        {/* bottom flap */}
-        <polygon points="10,210 170,110 330,210" fill="#fb7185" />
-        {/* top flap — rotates open */}
-        <motion.g
-          style={{ transformOrigin: "170px 30px", transformBox: "fill-box" }}
-          initial={{ rotateX: 0 }}
-          animate={{ rotateX: opening ? -170 : 0 }}
-          transition={{ duration: 0.7, ease: [0.4, 0.0, 0.2, 1] }}
+      {/* envelope body */}
+      <div className="absolute inset-0 rounded-md bg-rose-200 shadow-2xl" />
+      {/* left & right inside flaps (triangles) */}
+      <div
+        className="absolute inset-0 bg-rose-300"
+        style={{ clipPath: "polygon(0 0, 50% 50%, 0 100%)" }}
+      />
+      <div
+        className="absolute inset-0 bg-rose-300"
+        style={{ clipPath: "polygon(100% 0, 100% 100%, 50% 50%)" }}
+      />
+      {/* bottom flap */}
+      <div
+        className="absolute inset-0 bg-rose-400"
+        style={{ clipPath: "polygon(0 100%, 50% 40%, 100% 100%)" }}
+      />
+      {/* top flap — hinges from top edge */}
+      <motion.div
+        className="absolute inset-x-0 top-0 h-[60%]"
+        style={{
+          clipPath: "polygon(0 0, 100% 0, 50% 100%)",
+          background: "#e11d48",
+          transformOrigin: "top center",
+          transformStyle: "preserve-3d",
+          backfaceVisibility: "visible",
+        }}
+        initial={{ rotateX: 0 }}
+        animate={{ rotateX: opening ? -175 : 0 }}
+        transition={{ duration: 0.8, ease: [0.4, 0.0, 0.2, 1] }}
+      />
+      {/* wax seal — on top of the closed flap */}
+      {!opening && (
+        <motion.div
+          className="absolute left-1/2 top-[52%] flex h-12 w-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-rose-800 font-serif italic text-rose-50 shadow-lg ring-2 ring-rose-900/30"
+          exit={{ scale: 0, opacity: 0 }}
+          transition={{ duration: 0.2 }}
         >
-          <polygon points="10,30 330,30 170,160" fill="#e11d48" />
-          {/* wax seal — rides with the flap */}
-          <circle cx="170" cy="120" r="22" fill="#be123c" />
-          <circle
-            cx="170"
-            cy="120"
-            r="22"
-            fill="none"
-            stroke="#881337"
-            strokeWidth="1.5"
-            opacity="0.6"
-          />
-          <text
-            x="170"
-            y="128"
-            textAnchor="middle"
-            fontSize="20"
-            fill="#fff1f2"
-            fontFamily="Georgia, serif"
-            fontStyle="italic"
-          >
-            K
-          </text>
-        </motion.g>
-      </svg>
+          K
+        </motion.div>
+      )}
       {!opening && (
         <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap text-xs uppercase tracking-[0.3em] text-white/80">
           Tap to open
