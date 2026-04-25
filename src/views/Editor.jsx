@@ -100,7 +100,7 @@ export default function Editor() {
               rows={5}
               maxLength={1500}
               placeholder="Write something from the heart…"
-              className="w-full resize-none rounded-lg border border-slate-300 px-3 py-2 text-slate-800 outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-200"
+              className="w-full resize-none rounded-lg border border-slate-300 px-3 py-2 text-base text-slate-800 outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-200"
             />
             <div className="mt-1 text-right text-xs text-slate-400">{message.length}/1500</div>
           </div>
@@ -185,7 +185,7 @@ function Field({ label, value, onChange, placeholder }) {
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         maxLength={60}
-        className="w-full rounded-lg border border-slate-300 px-3 py-2 text-slate-800 outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-200"
+        className="w-full rounded-lg border border-slate-300 px-3 py-2 text-base text-slate-800 outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-200"
       />
     </label>
   );
