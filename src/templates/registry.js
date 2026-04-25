@@ -784,6 +784,68 @@ export const TEMPLATES = [
     inside: { palette: "midnight", decoration: "none", font: "font-caveat" },
     reveal: "fade",
   },
+
+  // ---------- MORE RICH EVERYDAY / LOVE ----------
+  {
+    id: "everyday-sweet-dreams",
+    name: "Sweet Dreams",
+    category: "everyday",
+    lang: "en",
+    cover: {
+      palette: "midnight",
+      decoration: "sparkle-trail",
+      titleFont: "font-dancing",
+      title: "Sweet Dreams",
+      emoji: "🌙",
+    },
+    inside: { palette: "midnight", decoration: "none", font: "font-caveat" },
+    reveal: "fade",
+  },
+  {
+    id: "love-always",
+    name: "I Love You Always",
+    category: "love",
+    lang: "en",
+    cover: {
+      palette: "rose",
+      decoration: "rose-rain",
+      titleFont: "font-dancing",
+      title: "I Love You, Always",
+      emoji: "💖",
+    },
+    inside: { palette: "rose", decoration: "none", font: "font-caveat" },
+    reveal: "burst",
+  },
+  {
+    id: "birthday-rich-wish",
+    name: "Birthday Wish",
+    category: "birthday",
+    lang: "en",
+    cover: {
+      palette: "lavender",
+      decoration: "ribbon-drift",
+      titleFont: "font-dancing",
+      title: "Wishing You the Moon",
+      emoji: "🎁",
+    },
+    inside: { palette: "lavender", decoration: "none", font: "font-caveat" },
+    reveal: "rise",
+  },
+  {
+    id: "miss-long-distance",
+    name: "Across the Miles",
+    category: "miss",
+    lang: "en",
+    cover: {
+      palette: "midnight",
+      decoration: "cupid-hearts",
+      titleFont: "font-playfair",
+      title: "Across the Miles",
+      emoji: "✈️",
+    },
+    inside: { palette: "midnight", decoration: "none", font: "font-caveat" },
+    reveal: "rise",
+  },
 ];
 
 export const getTemplate = (id) =>
