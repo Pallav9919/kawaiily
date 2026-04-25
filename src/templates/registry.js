@@ -213,6 +213,53 @@ export const TEMPLATES = [
     inside: { palette: "midnight", decoration: "none", font: "font-devanagari" },
     reveal: "fade",
   },
+
+  // ---------- THANK YOU ----------
+  {
+    id: "thanks-grateful",
+    name: "Thank You",
+    category: "thanks",
+    lang: "en",
+    cover: {
+      palette: "emerald",
+      decoration: "petals",
+      titleFont: "font-playfair",
+      title: "Thank You",
+      emoji: "🙏",
+    },
+    inside: { palette: "emerald", decoration: "none", font: "font-caveat" },
+    reveal: "fade",
+  },
+  {
+    id: "thanks-much-appreciated",
+    name: "Much Appreciated",
+    category: "thanks",
+    lang: "en",
+    cover: {
+      palette: "sunset",
+      decoration: "stars",
+      titleFont: "font-dancing",
+      title: "You are a Gem",
+      emoji: "✨",
+    },
+    inside: { palette: "sunset", decoration: "none", font: "font-caveat" },
+    reveal: "rise",
+  },
+  {
+    id: "thanks-shukriya",
+    name: "Shukriya",
+    category: "thanks",
+    lang: "hi",
+    cover: {
+      palette: "mint",
+      decoration: "petals",
+      titleFont: "font-devanagari",
+      title: "शुक्रिया",
+      emoji: "🌿",
+    },
+    inside: { palette: "mint", decoration: "none", font: "font-devanagari" },
+    reveal: "fade",
+  },
 ];
 
 export const getTemplate = (id) =>
