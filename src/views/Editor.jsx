@@ -46,6 +46,24 @@ export default function Editor() {
     setTimeout(() => setCopied(false), 1800);
   };
 
+  const share = async () => {
+    if (!url) return;
+    const shareText = `I made you a little something ✨ ${url}`;
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: "A card for you", text: shareText, url });
+      } catch {
+        /* user cancelled */
+      }
+    } else {
+      window.open(
+        `https://wa.me/?text=${encodeURIComponent(shareText)}`,
+        "_blank",
+        "noreferrer"
+      );
+    }
+  };
+
   return (
     <div className="min-h-full bg-gradient-to-b from-rose-50 via-white to-indigo-50 p-6">
       <div className="mx-auto max-w-3xl">
@@ -115,6 +133,12 @@ export default function Editor() {
             </button>
             {url && (
               <>
+                <button
+                  onClick={share}
+                  className="rounded-lg bg-emerald-500 px-5 py-2.5 font-semibold text-white shadow hover:bg-emerald-600"
+                >
+                  Share
+                </button>
                 <button
                   onClick={copy}
                   className="rounded-lg border border-slate-300 bg-white px-5 py-2.5 font-semibold text-slate-700 shadow-sm hover:bg-slate-50"
