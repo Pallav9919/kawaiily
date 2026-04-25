@@ -1,0 +1,14 @@
+{
+  "name": "Kawaiily",
+  "short_name": "Kawaiily",
+  "description": "Send a cute personalised greeting card with just a link.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fecdd3",
+  "theme_color": "#e11d48",
+  "categories": ["social", "lifestyle", "entertainment"],
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
