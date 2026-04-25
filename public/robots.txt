@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://kawaiily.vercel.app/sitemap.xml
