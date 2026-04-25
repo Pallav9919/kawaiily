@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { getTemplate } from "../templates/registry";
 import { getPalette } from "../templates/palettes";
 import { getDecoration } from "../components/decorations";
@@ -94,34 +94,50 @@ function Face({ children, className, back }) {
 
 function Envelope({ onOpen }) {
   return (
-    <AnimatePresence>
-      <motion.button
-        key="envelope"
-        onClick={onOpen}
-        initial={{ scale: 0.9, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        whileHover={{ y: -4 }}
-        className="relative h-[240px] w-[340px] sm:h-[260px] sm:w-[380px]"
-        aria-label="Open envelope"
+    <motion.button
+      onClick={onOpen}
+      initial={{ scale: 0.9, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1, y: [0, -6, 0] }}
+      transition={{
+        scale: { duration: 0.4 },
+        opacity: { duration: 0.4 },
+        y: { duration: 3, repeat: Infinity, ease: "easeInOut" },
+      }}
+      whileTap={{ scale: 0.96 }}
+      className="relative"
+      aria-label="Open envelope"
+    >
+      <svg
+        viewBox="0 0 340 220"
+        className="h-[220px] w-[340px] drop-shadow-2xl sm:h-[240px] sm:w-[380px]"
       >
-        <div className="absolute inset-0 rounded-md bg-rose-100 shadow-2xl" />
-        <div className="absolute left-0 top-0 h-full w-1/2 bg-rose-200" style={{ clipPath: "polygon(0 0, 100% 50%, 0 100%)" }} />
-        <div className="absolute right-0 top-0 h-full w-1/2 bg-rose-200" style={{ clipPath: "polygon(100% 0, 100% 100%, 0 50%)" }} />
-        <div className="absolute bottom-0 left-0 h-1/2 w-full bg-rose-300" style={{ clipPath: "polygon(0 100%, 50% 0, 100% 100%)" }} />
-        <motion.div
-          className="absolute left-0 top-0 h-1/2 w-full origin-top bg-rose-400"
-          style={{ clipPath: "polygon(0 0, 100% 0, 50% 100%)" }}
-          initial={{ rotateX: 0 }}
-          whileHover={{ rotateX: -30 }}
-          transition={{ type: "spring", stiffness: 200, damping: 14 }}
-        />
-        <div className="absolute left-1/2 top-1/2 flex h-14 w-14 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-red-600 text-xl text-white shadow-lg ring-4 ring-red-700/40">
-          ✉︎
-        </div>
-        <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-xs uppercase tracking-widest text-white/80">
-          Tap to open
-        </span>
-      </motion.button>
-    </AnimatePresence>
+        {/* envelope body */}
+        <rect x="10" y="30" width="320" height="180" rx="6" fill="#fecdd3" />
+        {/* left & right inside flaps (triangles) */}
+        <polygon points="10,30 170,140 10,210" fill="#fda4af" />
+        <polygon points="330,30 170,140 330,210" fill="#fda4af" />
+        {/* bottom flap */}
+        <polygon points="10,210 170,110 330,210" fill="#fb7185" />
+        {/* top flap — the one that "opens" */}
+        <polygon points="10,30 330,30 170,160" fill="#e11d48" />
+        {/* wax seal */}
+        <circle cx="170" cy="120" r="22" fill="#be123c" />
+        <circle cx="170" cy="120" r="22" fill="none" stroke="#881337" strokeWidth="1.5" opacity="0.6" />
+        <text
+          x="170"
+          y="128"
+          textAnchor="middle"
+          fontSize="20"
+          fill="#fff1f2"
+          fontFamily="Georgia, serif"
+          fontStyle="italic"
+        >
+          K
+        </text>
+      </svg>
+      <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap text-xs uppercase tracking-[0.3em] text-white/80">
+        Tap to open
+      </span>
+    </motion.button>
   );
 }
