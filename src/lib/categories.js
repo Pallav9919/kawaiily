@@ -4,6 +4,7 @@ export const CATEGORIES = [
   { id: "birthday", label: "Birthday" },
   { id: "friendship", label: "Friendship" },
   { id: "festival", label: "Festivals" },
+  { id: "everyday", label: "Everyday" },
   { id: "thanks", label: "Thank You" },
   { id: "miss", label: "Miss You" },
   { id: "sorry", label: "Sorry" },
