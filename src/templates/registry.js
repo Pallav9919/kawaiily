@@ -260,6 +260,53 @@ export const TEMPLATES = [
     inside: { palette: "mint", decoration: "none", font: "font-devanagari" },
     reveal: "fade",
   },
+
+  // ---------- MISS YOU ----------
+  {
+    id: "miss-you-moon",
+    name: "Missing You",
+    category: "miss",
+    lang: "en",
+    cover: {
+      palette: "midnight",
+      decoration: "stars",
+      titleFont: "font-playfair",
+      title: "I Miss You",
+      emoji: "🌙",
+    },
+    inside: { palette: "midnight", decoration: "none", font: "font-caveat" },
+    reveal: "fade",
+  },
+  {
+    id: "miss-you-thinkingof",
+    name: "Thinking of You",
+    category: "miss",
+    lang: "en",
+    cover: {
+      palette: "lavender",
+      decoration: "hearts",
+      titleFont: "font-dancing",
+      title: "Thinking of You",
+      emoji: "💭",
+    },
+    inside: { palette: "lavender", decoration: "none", font: "font-caveat" },
+    reveal: "rise",
+  },
+  {
+    id: "miss-yaad-aati",
+    name: "Yaad Aati Hai",
+    category: "miss",
+    lang: "hi",
+    cover: {
+      palette: "indigo",
+      decoration: "stars",
+      titleFont: "font-devanagari",
+      title: "तुम्हारी याद आती है",
+      emoji: "🕯️",
+    },
+    inside: { palette: "indigo", decoration: "none", font: "font-devanagari" },
+    reveal: "fade",
+  },
 ];
 
 export const getTemplate = (id) =>
