@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
+import { track } from "@vercel/analytics";
 import { TEMPLATES } from "../templates/registry";
 import { getPalette } from "../templates/palettes";
 import { getDecoration } from "../components/decorations";
@@ -35,8 +36,17 @@ export default function Editor() {
   }, [filtered, templateId]);
 
   const generate = () => {
+    const tpl = TEMPLATES.find((t) => t.id === templateId);
     setUrl(buildShareUrl({ t: templateId, f: from, to, m: message }));
     setCopied(false);
+    track("link_generated", {
+      template: templateId,
+      category: tpl?.category ?? "unknown",
+      lang: tpl?.lang ?? "unknown",
+      messageLength: message.length,
+      hasTo: to.trim().length > 0,
+      hasFrom: from.trim().length > 0,
+    });
   };
 
   const copy = async () => {
@@ -44,6 +54,7 @@ export default function Editor() {
     await navigator.clipboard.writeText(url);
     setCopied(true);
     setTimeout(() => setCopied(false), 1800);
+    track("link_copied", { template: templateId });
   };
 
   const share = async () => {
@@ -52,8 +63,9 @@ export default function Editor() {
     if (navigator.share) {
       try {
         await navigator.share({ title: "A card for you", text: shareText, url });
+        track("link_shared", { template: templateId, method: "native" });
       } catch {
-        /* user cancelled */
+        track("link_shared", { template: templateId, method: "native_cancelled" });
       }
     } else {
       window.open(
@@ -61,6 +73,7 @@ export default function Editor() {
         "_blank",
         "noreferrer"
       );
+      track("link_shared", { template: templateId, method: "whatsapp_web" });
     }
   };
 
