@@ -6,4 +6,5 @@ export const CATEGORIES = [
   { id: "festival", label: "Festivals" },
   { id: "thanks", label: "Thank You" },
   { id: "miss", label: "Miss You" },
+  { id: "sorry", label: "Sorry" },
 ];

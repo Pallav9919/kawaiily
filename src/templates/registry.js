@@ -166,6 +166,53 @@ export const TEMPLATES = [
     inside: { palette: "holi", decoration: "none", font: "font-devanagari" },
     reveal: "burst",
   },
+
+  // ---------- SORRY ----------
+  {
+    id: "sorry-soft",
+    name: "I'm Sorry",
+    category: "sorry",
+    lang: "en",
+    cover: {
+      palette: "lavender",
+      decoration: "petals",
+      titleFont: "font-playfair",
+      title: "I'm Sorry",
+      emoji: "🥺",
+    },
+    inside: { palette: "lavender", decoration: "none", font: "font-caveat" },
+    reveal: "fade",
+  },
+  {
+    id: "sorry-forgive",
+    name: "Forgive Me",
+    category: "sorry",
+    lang: "en",
+    cover: {
+      palette: "indigo",
+      decoration: "geometric",
+      titleFont: "font-dancing",
+      title: "Please Forgive Me",
+      emoji: "🙇",
+    },
+    inside: { palette: "indigo", decoration: "none", font: "font-caveat" },
+    reveal: "rise",
+  },
+  {
+    id: "sorry-maafi",
+    name: "Maafi",
+    category: "sorry",
+    lang: "hi",
+    cover: {
+      palette: "midnight",
+      decoration: "stars",
+      titleFont: "font-devanagari",
+      title: "माफ़ कर दो",
+      emoji: "🤍",
+    },
+    inside: { palette: "midnight", decoration: "none", font: "font-devanagari" },
+    reveal: "fade",
+  },
 ];
 
 export const getTemplate = (id) =>

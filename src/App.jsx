@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Editor from "./views/Editor";
 import Viewer from "./views/Viewer";
+import MadeBy from "./components/MadeBy";
 import { decodeCard } from "./lib/hash";
 
 export default function App() {
@@ -17,5 +18,10 @@ export default function App() {
     return () => window.removeEventListener("hashchange", onHash);
   }, []);
 
-  return data && data.m ? <Viewer data={data} /> : <Editor />;
+  return (
+    <>
+      {data && data.m ? <Viewer data={data} /> : <Editor />}
+      <MadeBy />
+    </>
+  );
 }
