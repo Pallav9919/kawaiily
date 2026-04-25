@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fecdd3"/>
+      <stop offset="1" stop-color="#c7d2fe"/>
+    </linearGradient>
+    <linearGradient id="envelope" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fda4af"/>
+      <stop offset="1" stop-color="#f43f5e"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- envelope -->
+  <g transform="translate(750 150)">
+    <rect x="0" y="50" width="340" height="220" rx="8" fill="url(#envelope)"/>
+    <polygon points="0,50 340,50 170,200" fill="#be123c"/>
+    <circle cx="170" cy="170" r="26" fill="#881337"/>
+    <text x="170" y="180" text-anchor="middle" font-size="28" fill="#fff1f2" font-family="Georgia, serif" font-style="italic">K</text>
+  </g>
+
+  <!-- text -->
+  <g transform="translate(80 230)">
+    <text font-family="'Playfair Display', Georgia, serif" font-weight="700" fill="#1e293b" font-size="96">Kawaiily</text>
+    <text y="70" font-family="system-ui, -apple-system, sans-serif" fill="#475569" font-size="36">Send a cute personalised card</text>
+    <text y="115" font-family="system-ui, -apple-system, sans-serif" fill="#475569" font-size="36">with just a link ✨</text>
+    <text y="230" font-family="system-ui, -apple-system, sans-serif" fill="#e11d48" font-weight="600" font-size="28">kawaiily.vercel.app</text>
+  </g>
+</svg>
