@@ -1,0 +1,127 @@
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { getTemplate } from "../templates/registry";
+import { getPalette } from "../templates/palettes";
+import { getDecoration } from "../components/decorations";
+import { getReveal } from "../components/animations";
+
+export default function Viewer({ data }) {
+  const [opened, setOpened] = useState(false);
+  const [flipped, setFlipped] = useState(false);
+  const tpl = getTemplate(data.t);
+  const coverPal = getPalette(tpl.cover.palette);
+  const insidePal = getPalette(tpl.inside.palette);
+  const CoverDeco = getDecoration(tpl.cover.decoration);
+  const InsideDeco = getDecoration(tpl.inside.decoration);
+  const reveal = getReveal(tpl.reveal);
+
+  return (
+    <div className="flex min-h-full items-center justify-center bg-gradient-to-br from-slate-900 via-rose-900 to-slate-900 p-4">
+      <div className="relative flex flex-col items-center">
+        {!opened ? (
+          <Envelope onOpen={() => setOpened(true)} />
+        ) : (
+          <motion.div {...reveal} className="perspective">
+            <motion.div
+              className="preserve-3d relative h-[520px] w-[340px] cursor-pointer sm:h-[560px] sm:w-[380px]"
+              onClick={() => setFlipped((f) => !f)}
+              animate={{ rotateY: flipped ? 180 : 0 }}
+              transition={{ duration: 0.9, ease: [0.4, 0.1, 0.2, 1] }}
+            >
+              <Face className={`${coverPal.cover} flex flex-col items-center justify-center`}>
+                <CoverDeco />
+                <div className="relative text-7xl drop-shadow">{tpl.cover.emoji}</div>
+                <h2 className={`relative mt-6 px-4 text-center text-4xl font-bold ${tpl.cover.titleFont}`}>
+                  {tpl.cover.title}
+                </h2>
+                {data.to && (
+                  <p className="relative mt-2 text-center text-lg opacity-90">
+                    {tpl.lang === "hi" ? `${data.to} के लिए` : `For ${data.to}`}
+                  </p>
+                )}
+                <p className="absolute bottom-6 text-xs uppercase tracking-widest opacity-70">
+                  Tap to open
+                </p>
+              </Face>
+              <Face back className={`${insidePal.inside} flex flex-col p-8`}>
+                <InsideDeco />
+                <div className={`relative text-sm font-semibold ${insidePal.accent}`}>
+                  {data.to
+                    ? tpl.lang === "hi"
+                      ? `प्रिय ${data.to},`
+                      : `Dear ${data.to},`
+                    : tpl.lang === "hi"
+                    ? "नमस्ते,"
+                    : "Hello,"}
+                </div>
+                <p className={`relative mt-4 flex-1 overflow-auto whitespace-pre-wrap text-lg leading-relaxed ${tpl.inside.font}`}>
+                  {data.m}
+                </p>
+                {data.f && (
+                  <div className={`relative mt-4 text-right italic ${insidePal.accent}`}>
+                    — {data.f}
+                  </div>
+                )}
+                <div className="relative mt-6 text-center text-[10px] uppercase tracking-widest opacity-60">
+                  Tap to flip
+                </div>
+              </Face>
+            </motion.div>
+          </motion.div>
+        )}
+
+        <a
+          href={window.location.pathname}
+          className="mt-8 text-sm text-white/70 underline hover:text-white"
+        >
+          Create your own ✨
+        </a>
+      </div>
+    </div>
+  );
+}
+
+function Face({ children, className, back }) {
+  return (
+    <div
+      className={`absolute inset-0 backface-hidden overflow-hidden rounded-2xl shadow-2xl ${className}`}
+      style={{ transform: back ? "rotateY(180deg)" : "none" }}
+    >
+      {children}
+    </div>
+  );
+}
+
+function Envelope({ onOpen }) {
+  return (
+    <AnimatePresence>
+      <motion.button
+        key="envelope"
+        onClick={onOpen}
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        whileHover={{ y: -4 }}
+        className="relative h-[240px] w-[340px] sm:h-[260px] sm:w-[380px]"
+        aria-label="Open envelope"
+      >
+        <div className="absolute inset-0 rounded-md bg-rose-100 shadow-2xl" />
+        <div className="absolute left-0 top-0 h-full w-1/2 bg-rose-200" style={{ clipPath: "polygon(0 0, 100% 50%, 0 100%)" }} />
+        <div className="absolute right-0 top-0 h-full w-1/2 bg-rose-200" style={{ clipPath: "polygon(100% 0, 100% 100%, 0 50%)" }} />
+        <div className="absolute bottom-0 left-0 h-1/2 w-full bg-rose-300" style={{ clipPath: "polygon(0 100%, 50% 0, 100% 100%)" }} />
+        <motion.div
+          className="absolute left-0 top-0 h-1/2 w-full origin-top bg-rose-400"
+          style={{ clipPath: "polygon(0 0, 100% 0, 50% 100%)" }}
+          initial={{ rotateX: 0 }}
+          whileHover={{ rotateX: -30 }}
+          transition={{ type: "spring", stiffness: 200, damping: 14 }}
+        />
+        <div className="absolute left-1/2 top-1/2 flex h-14 w-14 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-red-600 text-xl text-white shadow-lg ring-4 ring-red-700/40">
+          ✉︎
+        </div>
+        <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-xs uppercase tracking-widest text-white/80">
+          Tap to open
+        </span>
+      </motion.button>
+    </AnimatePresence>
+  );
+}
