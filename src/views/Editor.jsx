@@ -120,7 +120,10 @@ export default function Editor() {
               placeholder="Write something from the heart…"
               className="w-full resize-none rounded-lg border border-slate-300 px-3 py-2 text-base text-slate-800 outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-200"
             />
-            <div className="mt-1 text-right text-xs text-slate-400">{message.length}/1500</div>
+            <div className="mt-1 flex justify-between text-xs text-slate-400">
+              <span>{!canGenerate && message.length === 0 ? "Write a message to enable the share link" : "\u00A0"}</span>
+              <span>{message.length}/1500</span>
+            </div>
           </div>
 
           <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center">
