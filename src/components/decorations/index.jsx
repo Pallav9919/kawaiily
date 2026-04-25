@@ -165,6 +165,206 @@ const Colors = ({ count = 14 }) => {
   );
 };
 
+// ============ Rich cinematic decorations (new, leave originals untouched) ============
+
+const seedFallers = (count, seed = 0) =>
+  Array.from({ length: count }, (_, i) => {
+    const r = Math.sin(seed + i * 41.21) * 10000;
+    const rand = r - Math.floor(r);
+    const r2 = Math.sin(seed + i * 13.7) * 10000;
+    const rand2 = r2 - Math.floor(r2);
+    return {
+      left: `${rand * 100}%`,
+      size: 18 + rand2 * 20,
+      duration: 6 + rand * 6,
+      delay: rand2 * 5,
+      drift: (rand - 0.5) * 40,
+      rotate: (rand2 - 0.5) * 80,
+    };
+  });
+
+const FallingEmoji = ({ emoji, count = 16, seed = 10, sizeAdjust = 0, slower = 0 }) => (
+  <Layer>
+    {seedFallers(count, seed).map((p, i) => (
+      <motion.div
+        key={i}
+        className="absolute"
+        style={{ left: p.left, top: -40, fontSize: p.size + sizeAdjust }}
+        initial={{ y: 0, x: 0, rotate: 0, opacity: 0 }}
+        animate={{ y: "110vh", x: p.drift, rotate: p.rotate, opacity: [0, 1, 1, 0.85] }}
+        transition={{ duration: p.duration + slower, repeat: Infinity, delay: p.delay, ease: "linear" }}
+      >
+        {emoji}
+      </motion.div>
+    ))}
+  </Layer>
+);
+
+const RoseRain = ({ count = 16 }) => <FallingEmoji emoji="🌹" count={count} seed={10} />;
+const ChocolateRain = ({ count = 14 }) => <FallingEmoji emoji="🍫" count={count} seed={11} sizeAdjust={-2} />;
+const TeddyDrift = ({ count = 10 }) => (
+  <Layer>
+    {seedFallers(count, 12).map((p, i) => (
+      <motion.div
+        key={i}
+        className="absolute"
+        style={{ left: p.left, top: -50, fontSize: p.size + 6 }}
+        initial={{ y: 0, x: 0, rotate: -10, opacity: 0 }}
+        animate={{ y: "110vh", x: [p.drift, -p.drift, p.drift], rotate: [-10, 10, -10], opacity: [0, 1, 1, 0.85] }}
+        transition={{ duration: p.duration + 3, repeat: Infinity, delay: p.delay, ease: "easeInOut" }}
+      >
+        🧸
+      </motion.div>
+    ))}
+  </Layer>
+);
+
+const PetalShower = ({ count = 22 }) => {
+  const emojis = ["🌸", "🌺", "🌷"];
+  return (
+    <Layer>
+      {seedFallers(count, 13).map((p, i) => (
+        <motion.div
+          key={i}
+          className="absolute"
+          style={{ left: p.left, top: -40, fontSize: p.size - 4 }}
+          initial={{ y: 0, x: 0, rotate: 0, opacity: 0 }}
+          animate={{ y: "110vh", x: [p.drift, -p.drift], rotate: [0, 360], opacity: [0, 1, 1, 0.9] }}
+          transition={{ duration: p.duration + 2, repeat: Infinity, delay: p.delay, ease: "easeInOut" }}
+        >
+          {emojis[i % emojis.length]}
+        </motion.div>
+      ))}
+    </Layer>
+  );
+};
+
+const SparkleTrail = ({ count = 28 }) => (
+  <Layer>
+    {seedFallers(count, 14).map((p, i) => (
+      <motion.div
+        key={i}
+        className="absolute text-yellow-200"
+        style={{ left: p.left, top: `${(i * 37) % 100}%`, fontSize: p.size - 6 }}
+        animate={{ opacity: [0, 1, 0], scale: [0.6, 1.2, 0.6] }}
+        transition={{ duration: 2 + p.delay * 0.5, repeat: Infinity, delay: p.delay }}
+      >
+        ✦
+      </motion.div>
+    ))}
+  </Layer>
+);
+
+const FireworkBursts = () => {
+  const spots = [
+    { left: "20%", top: "25%", color: "#fbbf24" },
+    { left: "75%", top: "20%", color: "#f472b6" },
+    { left: "50%", top: "55%", color: "#34d399" },
+    { left: "15%", top: "70%", color: "#60a5fa" },
+    { left: "80%", top: "75%", color: "#a78bfa" },
+  ];
+  return (
+    <Layer>
+      {spots.map((s, idx) => (
+        <div key={idx} className="absolute" style={{ left: s.left, top: s.top }}>
+          {Array.from({ length: 12 }, (_, i) => {
+            const angle = (i / 12) * Math.PI * 2;
+            return (
+              <motion.span
+                key={i}
+                className="absolute block h-1 w-1 rounded-full"
+                style={{ background: s.color }}
+                animate={{
+                  x: [0, Math.cos(angle) * 60, Math.cos(angle) * 80],
+                  y: [0, Math.sin(angle) * 60, Math.sin(angle) * 80 + 20],
+                  opacity: [1, 1, 0],
+                }}
+                transition={{ duration: 1.6, repeat: Infinity, delay: idx * 0.4, ease: "easeOut" }}
+              />
+            );
+          })}
+        </div>
+      ))}
+    </Layer>
+  );
+};
+
+const SnowFall = ({ count = 24 }) => (
+  <Layer>
+    {seedFallers(count, 15).map((p, i) => (
+      <motion.div
+        key={i}
+        className="absolute text-white"
+        style={{ left: p.left, top: -20, fontSize: p.size - 6, opacity: 0.85 }}
+        initial={{ y: 0, x: 0 }}
+        animate={{ y: "110vh", x: [p.drift, -p.drift, p.drift] }}
+        transition={{ duration: p.duration + 4, repeat: Infinity, delay: p.delay, ease: "linear" }}
+      >
+        ❄
+      </motion.div>
+    ))}
+  </Layer>
+);
+
+const CupidHearts = ({ count = 10 }) => (
+  <Layer>
+    {seedFallers(count, 16).map((p, i) => (
+      <motion.div
+        key={i}
+        className="absolute"
+        style={{ left: p.left, bottom: -40, fontSize: p.size }}
+        initial={{ y: 0, x: 0, opacity: 0 }}
+        animate={{ y: "-110vh", x: [0, p.drift, -p.drift, 0], opacity: [0, 1, 1, 0.8] }}
+        transition={{ duration: p.duration + 3, repeat: Infinity, delay: p.delay, ease: "easeInOut" }}
+      >
+        💘
+      </motion.div>
+    ))}
+  </Layer>
+);
+
+const DiyaGlow = () => {
+  const spots = [
+    { left: "15%", top: "70%" },
+    { left: "38%", top: "78%" },
+    { left: "60%", top: "72%" },
+    { left: "82%", top: "80%" },
+    { left: "50%", top: "85%" },
+  ];
+  return (
+    <Layer>
+      {spots.map((s, i) => (
+        <div key={i} className="absolute" style={s}>
+          <motion.div
+            className="absolute -inset-6 rounded-full"
+            style={{ background: "radial-gradient(circle, rgba(253,186,116,0.7) 0%, transparent 70%)" }}
+            animate={{ scale: [1, 1.25, 1], opacity: [0.7, 1, 0.7] }}
+            transition={{ duration: 2 + i * 0.3, repeat: Infinity }}
+          />
+          <div className="relative text-3xl">🪔</div>
+        </div>
+      ))}
+    </Layer>
+  );
+};
+
+const RibbonDrift = ({ count = 12 }) => (
+  <Layer>
+    {seedFallers(count, 17).map((p, i) => (
+      <motion.div
+        key={i}
+        className="absolute"
+        style={{ left: p.left, top: -40, fontSize: p.size }}
+        initial={{ y: 0, x: 0, rotate: 0, opacity: 0 }}
+        animate={{ y: "110vh", x: [p.drift, -p.drift * 1.5, p.drift], rotate: [0, 180, 360], opacity: [0, 1, 1, 0.9] }}
+        transition={{ duration: p.duration + 2, repeat: Infinity, delay: p.delay, ease: "easeInOut" }}
+      >
+        🎀
+      </motion.div>
+    ))}
+  </Layer>
+);
+
 export const DECORATIONS = {
   none: () => null,
   hearts: Hearts,
@@ -175,6 +375,16 @@ export const DECORATIONS = {
   geometric: Geometric,
   balloons: Balloons,
   colors: Colors,
+  "rose-rain": RoseRain,
+  "chocolate-rain": ChocolateRain,
+  "teddy-drift": TeddyDrift,
+  "petal-shower": PetalShower,
+  "sparkle-trail": SparkleTrail,
+  "firework-bursts": FireworkBursts,
+  "snow-fall": SnowFall,
+  "cupid-hearts": CupidHearts,
+  "diya-glow": DiyaGlow,
+  "ribbon-drift": RibbonDrift,
 };
 
 export const getDecoration = (id) => DECORATIONS[id] || DECORATIONS.none;
