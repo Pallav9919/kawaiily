@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { getTemplate } from "../templates/registry";
 import { getPalette } from "../templates/palettes";
 import { getDecoration } from "../components/decorations";
@@ -18,10 +18,11 @@ export default function Viewer({ data }) {
   return (
     <div className="flex min-h-full items-center justify-center bg-gradient-to-br from-slate-900 via-rose-900 to-slate-900 p-4">
       <div className="relative flex flex-col items-center">
-        {!opened ? (
-          <Envelope onOpen={() => setOpened(true)} />
-        ) : (
-          <motion.div {...reveal} className="perspective">
+        <AnimatePresence mode="wait">
+          {!opened ? (
+            <Envelope key="envelope" onOpen={() => setOpened(true)} />
+          ) : (
+            <motion.div key="card" {...reveal} className="perspective">
             <motion.div
               className="preserve-3d relative h-[520px] w-[340px] cursor-pointer sm:h-[560px] sm:w-[380px]"
               onClick={() => setFlipped((f) => !f)}
@@ -68,7 +69,8 @@ export default function Viewer({ data }) {
               </Face>
             </motion.div>
           </motion.div>
-        )}
+          )}
+        </AnimatePresence>
 
         <a
           href={window.location.pathname}
@@ -93,17 +95,34 @@ function Face({ children, className, back }) {
 }
 
 function Envelope({ onOpen }) {
+  const [opening, setOpening] = useState(false);
+
+  const handleTap = () => {
+    if (opening) return;
+    setOpening(true);
+    setTimeout(onOpen, 700); // let flap animation finish first
+  };
+
   return (
     <motion.button
-      onClick={onOpen}
+      onClick={handleTap}
       initial={{ scale: 0.9, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1, y: [0, -6, 0] }}
-      transition={{
-        scale: { duration: 0.4 },
-        opacity: { duration: 0.4 },
-        y: { duration: 3, repeat: Infinity, ease: "easeInOut" },
-      }}
-      whileTap={{ scale: 0.96 }}
+      animate={
+        opening
+          ? { scale: 0.95, opacity: 0, y: 20 }
+          : { scale: 1, opacity: 1, y: [0, -6, 0] }
+      }
+      transition={
+        opening
+          ? { duration: 0.5, delay: 0.4 }
+          : {
+              scale: { duration: 0.4 },
+              opacity: { duration: 0.4 },
+              y: { duration: 3, repeat: Infinity, ease: "easeInOut" },
+            }
+      }
+      whileTap={!opening ? { scale: 0.96 } : {}}
+      exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.3 } }}
       className="relative"
       aria-label="Open envelope"
     >
@@ -113,31 +132,48 @@ function Envelope({ onOpen }) {
       >
         {/* envelope body */}
         <rect x="10" y="30" width="320" height="180" rx="6" fill="#fecdd3" />
-        {/* left & right inside flaps (triangles) */}
+        {/* left & right inside flaps */}
         <polygon points="10,30 170,140 10,210" fill="#fda4af" />
         <polygon points="330,30 170,140 330,210" fill="#fda4af" />
         {/* bottom flap */}
         <polygon points="10,210 170,110 330,210" fill="#fb7185" />
-        {/* top flap — the one that "opens" */}
-        <polygon points="10,30 330,30 170,160" fill="#e11d48" />
-        {/* wax seal */}
-        <circle cx="170" cy="120" r="22" fill="#be123c" />
-        <circle cx="170" cy="120" r="22" fill="none" stroke="#881337" strokeWidth="1.5" opacity="0.6" />
-        <text
-          x="170"
-          y="128"
-          textAnchor="middle"
-          fontSize="20"
-          fill="#fff1f2"
-          fontFamily="Georgia, serif"
-          fontStyle="italic"
+        {/* top flap — rotates open */}
+        <motion.g
+          style={{ transformOrigin: "170px 30px", transformBox: "fill-box" }}
+          initial={{ rotateX: 0 }}
+          animate={{ rotateX: opening ? -170 : 0 }}
+          transition={{ duration: 0.7, ease: [0.4, 0.0, 0.2, 1] }}
         >
-          K
-        </text>
+          <polygon points="10,30 330,30 170,160" fill="#e11d48" />
+          {/* wax seal — rides with the flap */}
+          <circle cx="170" cy="120" r="22" fill="#be123c" />
+          <circle
+            cx="170"
+            cy="120"
+            r="22"
+            fill="none"
+            stroke="#881337"
+            strokeWidth="1.5"
+            opacity="0.6"
+          />
+          <text
+            x="170"
+            y="128"
+            textAnchor="middle"
+            fontSize="20"
+            fill="#fff1f2"
+            fontFamily="Georgia, serif"
+            fontStyle="italic"
+          >
+            K
+          </text>
+        </motion.g>
       </svg>
-      <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap text-xs uppercase tracking-[0.3em] text-white/80">
-        Tap to open
-      </span>
+      {!opening && (
+        <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap text-xs uppercase tracking-[0.3em] text-white/80">
+          Tap to open
+        </span>
+      )}
     </motion.button>
   );
 }
