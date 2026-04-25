@@ -160,11 +160,11 @@ function TemplateCard({ template, selected, onSelect }) {
       }`}
     >
       <Deco />
-      <div className="absolute left-1/2 top-[38%] -translate-x-1/2 -translate-y-1/2 text-4xl drop-shadow">
+      <div className="absolute left-1/2 top-[34%] -translate-x-1/2 -translate-y-1/2 text-5xl drop-shadow">
         {template.cover.emoji}
       </div>
       <div
-        className={`absolute bottom-8 left-3 right-3 line-clamp-2 text-center text-lg ${template.cover.titleFont}`}
+        className={`absolute bottom-9 left-2 right-2 line-clamp-2 text-center text-base leading-tight ${template.cover.titleFont}`}
       >
         {template.cover.title}
       </div>
