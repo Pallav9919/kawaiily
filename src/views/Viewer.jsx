@@ -4,6 +4,7 @@ import { getTemplate } from "../templates/registry";
 import { getPalette } from "../templates/palettes";
 import { getDecoration } from "../components/decorations";
 import { getReveal } from "../components/animations";
+import Burst from "../components/Burst";
 
 export default function Viewer({ data }) {
   const [opened, setOpened] = useState(false);
@@ -22,7 +23,8 @@ export default function Viewer({ data }) {
           {!opened ? (
             <Envelope key="envelope" onOpen={() => setOpened(true)} />
           ) : (
-            <motion.div key="card" {...reveal} className="perspective">
+            <motion.div key="card" {...reveal} className="relative perspective">
+              <Burst />
             <motion.div
               className="preserve-3d relative h-[520px] w-[340px] cursor-pointer sm:h-[560px] sm:w-[380px]"
               onClick={() => setFlipped((f) => !f)}
