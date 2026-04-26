@@ -402,37 +402,39 @@ const MangekyoItachi = () => (
     <motion.div
       className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
       animate={{ rotate: 360 }}
-      transition={{ duration: 14, repeat: Infinity, ease: "linear" }}
+      transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
     >
-      <svg viewBox="0 0 200 200" width="280" height="280" style={{ opacity: 0.55 }}>
-        {/* iris */}
-        <circle cx="100" cy="100" r="85" fill="#dc2626" />
-        <circle cx="100" cy="100" r="85" fill="none" stroke="#0a0a0a" strokeWidth="5" />
-        {/* outer red glow ring */}
-        <circle cx="100" cy="100" r="78" fill="none" stroke="#ef4444" strokeWidth="1.5" opacity="0.7" />
+      <svg viewBox="0 0 200 200" width="300" height="300" style={{ opacity: 0.7 }}>
+        <defs>
+          <radialGradient id="itachi-iris" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="#ef4444" />
+            <stop offset="55%" stopColor="#dc2626" />
+            <stop offset="100%" stopColor="#991b1b" />
+          </radialGradient>
+        </defs>
 
-        {/* Itachi's Mangekyō: three-pronged pinwheel (three curved blades + thin triangle spokes) */}
+        {/* outer bold black ring */}
+        <circle cx="100" cy="100" r="96" fill="#0a0a0a" />
+        {/* red iris with subtle gradient */}
+        <circle cx="100" cy="100" r="87" fill="url(#itachi-iris)" />
+
+        {/* Itachi's Mangekyō: three curved blades sweeping outward (shuriken shape).
+            Each blade is ~120° apart, starts wide near center, curves to a point at the rim. */}
         {[0, 120, 240].map((angle) => (
           <g key={angle} transform={`rotate(${angle} 100 100)`}>
-            {/* broad curved blade */}
             <path
               d="M 100 100
-                 Q 100 35 130 30
-                 Q 120 55 100 100 Z"
+                 C 82 70, 78 40, 100 18
+                 C 118 35, 124 58, 118 78
+                 C 114 90, 108 96, 100 100 Z"
               fill="#0a0a0a"
-            />
-            {/* thin triangular spoke between blades */}
-            <path
-              d="M 100 100 L 112 36 L 100 34 Z"
-              fill="#0a0a0a"
-              opacity="0.85"
             />
           </g>
         ))}
 
-        {/* center pupil with red highlight */}
-        <circle cx="100" cy="100" r="10" fill="#0a0a0a" />
-        <circle cx="100" cy="100" r="10" fill="none" stroke="#7f1d1d" strokeWidth="1" />
+        {/* center red circle (pupil) */}
+        <circle cx="100" cy="100" r="11" fill="#dc2626" />
+        <circle cx="100" cy="100" r="11" fill="none" stroke="#0a0a0a" strokeWidth="1.5" />
       </svg>
     </motion.div>
   </Layer>
