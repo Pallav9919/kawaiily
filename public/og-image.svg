@@ -36,8 +36,8 @@
     <text y="130" font-family="system-ui, -apple-system, sans-serif" fill="#334155" font-size="40" font-weight="500">card with just a link</text>
 
     <g transform="translate(0 220)">
-      <rect x="-8" y="-30" width="220" height="50" rx="25" fill="#e11d48"/>
-      <text x="102" y="6" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" fill="#fff" font-weight="700" font-size="20" letter-spacing="2">KAWAIILY.VERCEL.APP</text>
+      <rect x="-8" y="-30" width="320" height="54" rx="27" fill="#e11d48"/>
+      <text x="152" y="6" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" fill="#fff" font-weight="700" font-size="22" letter-spacing="1">KAWAIILY.VERCEL.APP</text>
     </g>
   </g>
 </svg>
