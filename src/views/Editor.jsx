@@ -115,7 +115,7 @@ export default function Editor() {
     const cat = resolvedConfig?.cat;
     const lang = resolvedConfig?.lang;
     const tplId = mode === "scratch" ? undefined : templateId;
-    const example = getExample(cat, lang, tplId);
+    const example = getExample(cat, lang, tplId, message);
     if (example === message) return;
     setDraft((d) => ({ ...d, message: example, isExample: true }));
     requestAnimationFrame(() => {
@@ -136,7 +136,7 @@ export default function Editor() {
     const lang = resolvedConfig?.lang;
     // Only use template-id for occasion detection in Template/Tweak modes.
     const tplId = mode === "scratch" ? undefined : templateId;
-    const example = getExample(cat, lang, tplId);
+    const example = getExample(cat, lang, tplId, message);
     setDraft((d) => ({ ...d, message: example, isExample: true }));
     requestAnimationFrame(() => {
       const el = messageRef.current;

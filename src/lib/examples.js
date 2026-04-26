@@ -853,18 +853,26 @@ const OCCASION_EXAMPLES = {
   },
 };
 
-export const getExample = (category, lang = "en", templateId) => {
+// Picks a random entry from a pool, avoiding `current` if possible.
+const pick = (pool, current) => {
+  if (!pool || !pool.length) return null;
+  if (pool.length === 1) return pool[0];
+  const filtered = current ? pool.filter((p) => p !== current) : pool;
+  const src = filtered.length ? filtered : pool;
+  return src[Math.floor(Math.random() * src.length)];
+};
+
+export const getExample = (category, lang = "en", templateId, current) => {
   // 1. Occasion-specific pool (most specific — e.g. Diwali, Rose Day, Good Morning)
   const occasion = detectOccasion(templateId);
   if (occasion && OCCASION_EXAMPLES[occasion]) {
     const pool = OCCASION_EXAMPLES[occasion];
     const langPool = pool[lang] || pool.en;
-    if (langPool && langPool.length) {
-      return langPool[Math.floor(Math.random() * langPool.length)];
-    }
+    const picked = pick(langPool, current);
+    if (picked) return picked;
   }
   // 2. Category × lang fallback
   const categoryPool = EXAMPLES[category] || EXAMPLES.everyday;
   const langPool = categoryPool[lang] || categoryPool.en || EXAMPLES.everyday.en;
-  return langPool[Math.floor(Math.random() * langPool.length)];
+  return pick(langPool, current) || langPool[0];
 };
