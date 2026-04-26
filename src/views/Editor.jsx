@@ -100,12 +100,8 @@ export default function Editor() {
     if (mode === "scratch" && !custom) {
       setCustom(templateAsCustom(templateId));
     }
-  }, [mode]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  // When switching modes, clamp step to a valid one for that mode.
-  useEffect(() => {
-    const last = mode === "tweak" ? 3 : 2;
-    if (step > last) setStep(last);
+    // Scratch mode has no Step 1 gallery — always skip to step 2 (the builder page).
+    if (mode === "scratch" && step === 1) setStep(2);
   }, [mode]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
@@ -139,12 +135,6 @@ export default function Editor() {
   };
 
   const goToWrite = () => {
-    const last = mode === "tweak" ? 3 : 2;
-    setStep(last);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
-  const goToTweak = () => {
     setStep(2);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -154,15 +144,8 @@ export default function Editor() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const goNext = () => {
-    if (mode === "tweak" && step === 1) return goToTweak();
-    return goToWrite();
-  };
-
-  const goBack = () => {
-    if (step === 3) return goToTweak();
-    return goToDesign();
-  };
+  const goNext = () => goToWrite();
+  const goBack = () => goToDesign();
 
   const generate = () => {
     const payload = { f: from, to, m: message };
@@ -223,76 +206,33 @@ export default function Editor() {
           step={step}
           mode={mode}
           onGoTo={(s) => {
-            if (s === 1) return goToDesign();
-            if (s === 2 && mode === "tweak") return goToTweak();
-            if ((s === 2 && mode !== "tweak") || s === 3) {
+            if (s === 1 && mode !== "scratch") return goToDesign();
+            if (s === 2) {
               if (canProceed) return goToWrite();
             }
           }}
           canGoNext={canProceed}
         />
 
-        {step === 1 && (
+        {/* STEP 1: Gallery — only for Template and Tweak modes */}
+        {step === 1 && mode !== "scratch" && (
           <>
             <ModeToggle mode={mode} onChange={setMode} />
 
-            {mode !== "scratch" && (
-              <TemplateGallery
-                templates={filtered}
-                category={category}
-                onCategoryChange={setCategory}
-                languages={languages}
-                onLanguagesChange={setLanguages}
-                query={query}
-                onQueryChange={setQuery}
-                selectedId={templateId}
-                onSelect={selectTemplate}
-              />
-            )}
-
-            {mode === "scratch" && (
-              <div className="mb-6">
-                <ScratchPanel custom={custom || SCRATCH_STARTER} onChange={setCustom} />
-              </div>
-            )}
-
-            <StickyNext
-              hint={
-                mode === "template"
-                  ? "Pick a design →"
-                  : mode === "tweak"
-                  ? "Pick a base template →"
-                  : "Design your own →"
-              }
-              label={mode === "tweak" ? "Next: Customize →" : "Next: Write message →"}
-              disabled={!canProceed}
-              onClick={goNext}
+            <TemplateGallery
+              templates={filtered}
+              category={category}
+              onCategoryChange={setCategory}
+              languages={languages}
+              onLanguagesChange={setLanguages}
+              query={query}
+              onQueryChange={setQuery}
+              selectedId={templateId}
+              onSelect={selectTemplate}
             />
-          </>
-        )}
-
-        {step === 2 && mode === "tweak" && (
-          <>
-            <button
-              onClick={goToDesign}
-              className="mb-4 inline-flex items-center gap-1 text-sm text-slate-600 underline hover:text-slate-900"
-            >
-              ← Back to templates
-            </button>
-
-            <section className="mb-6 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
-              <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-400">
-                Preview
-              </div>
-              <LivePreview config={resolvedConfig} to={to} from={from} message={message} />
-            </section>
-
-            <div className="mb-6">
-              <TweakPanel templateId={templateId} overrides={overrides} onChange={setOverrides} />
-            </div>
 
             <StickyNext
-              hint="Tweak as you like →"
+              hint={mode === "template" ? "Pick a design →" : "Pick a base template →"}
               label="Next: Write message →"
               disabled={!canProceed}
               onClick={goNext}
@@ -300,23 +240,47 @@ export default function Editor() {
           </>
         )}
 
-        {((step === 2 && mode !== "tweak") || step === 3) && (
+        {/* STEP 2: Build (Scratch) OR Write (Template) OR Tweak + Write (Tweak) */}
+        {(step === 2 || mode === "scratch") && (
           <>
-            <button
-              onClick={goBack}
-              className="mb-4 inline-flex items-center gap-1 text-sm text-slate-600 underline hover:text-slate-900"
-            >
-              ← Back
-            </button>
+            {mode !== "scratch" && (
+              <button
+                onClick={goToDesign}
+                className="mb-4 inline-flex items-center gap-1 text-sm text-slate-600 underline hover:text-slate-900"
+              >
+                ← Back to templates
+              </button>
+            )}
 
-            <section className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
-              <div className="mb-5">
-                <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-400">
-                  Preview
-                </div>
-                <LivePreview config={resolvedConfig} to={to} from={from} message={message} />
+            {mode === "scratch" && <ModeToggle mode={mode} onChange={setMode} />}
+
+            {/* Preview */}
+            <section className="mb-5 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+              <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-400">
+                Preview
               </div>
+              <LivePreview config={resolvedConfig} to={to} from={from} message={message} />
+            </section>
 
+            {/* Tweak or Scratch panel — live editing alongside message */}
+            {mode === "tweak" && (
+              <div className="mb-5">
+                <TweakPanel
+                  templateId={templateId}
+                  overrides={overrides}
+                  onChange={setOverrides}
+                />
+              </div>
+            )}
+
+            {mode === "scratch" && (
+              <div className="mb-5">
+                <ScratchPanel custom={custom || SCRATCH_STARTER} onChange={setCustom} />
+              </div>
+            )}
+
+            {/* Message form + share actions */}
+            <section className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
               <MessageForm
                 to={to}
                 from={from}
@@ -352,15 +316,16 @@ export default function Editor() {
 }
 
 function Stepper({ step, mode, onGoTo, canGoNext }) {
+  // Scratch mode is effectively single-step — hide stepper.
+  if (mode === "scratch") return null;
   const steps =
     mode === "tweak"
       ? [
-          { n: 1, label: "Pick" },
-          { n: 2, label: "Tweak" },
-          { n: 3, label: "Write & share" },
+          { n: 1, label: "Pick base" },
+          { n: 2, label: "Tweak & write" },
         ]
       : [
-          { n: 1, label: mode === "scratch" ? "Design" : "Pick" },
+          { n: 1, label: "Pick" },
           { n: 2, label: "Write & share" },
         ];
   return (
