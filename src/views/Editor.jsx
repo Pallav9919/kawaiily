@@ -5,14 +5,23 @@ import { getPalette } from "../templates/palettes";
 import { getDecoration } from "../components/decorations";
 import { CATEGORIES } from "../lib/categories";
 import { buildShareUrl } from "../lib/hash";
+import { useDraft } from "../lib/useDraft";
 
 export default function Editor() {
   const [category, setCategory] = useState("all");
   const [query, setQuery] = useState("");
-  const [templateId, setTemplateId] = useState(TEMPLATES[0].id);
-  const [from, setFrom] = useState("");
-  const [to, setTo] = useState("");
-  const [message, setMessage] = useState("");
+  const [draft, setDraft] = useDraft({
+    templateId: TEMPLATES[0].id,
+    from: "",
+    to: "",
+    message: "",
+  });
+  const { templateId, from, to, message } = draft;
+  const setTemplateId = (templateId) => setDraft((d) => ({ ...d, templateId }));
+  const setFrom = (from) => setDraft((d) => ({ ...d, from }));
+  const setTo = (to) => setDraft((d) => ({ ...d, to }));
+  const setMessage = (message) => setDraft((d) => ({ ...d, message }));
+
   const [url, setUrl] = useState("");
   const [copied, setCopied] = useState(false);
   const formRef = useRef(null);
