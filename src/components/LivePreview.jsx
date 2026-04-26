@@ -6,6 +6,7 @@ export default function LivePreview({ config, to, from, message }) {
   const coverPal = getPalette(config.cover.palette);
   const insidePal = getPalette(config.inside.palette);
   const CoverDeco = getDecoration(config.cover.decoration);
+  const InsideDeco = getDecoration(config.inside.decoration);
 
   return (
     <div className="grid grid-cols-2 gap-3">
@@ -31,11 +32,12 @@ export default function LivePreview({ config, to, from, message }) {
       <div
         className={`relative aspect-[3/4] overflow-hidden rounded-xl p-3 shadow-md ring-1 ring-black/5 ${insidePal.inside}`}
       >
-        <div className={`text-[11px] font-semibold ${insidePal.accent}`}>
+        <InsideDeco />
+        <div className={`relative text-[11px] font-semibold ${insidePal.accent}`}>
           {to ? `Dear ${to},` : "Dear…"}
         </div>
         <p
-          className={`mt-1 line-clamp-[10] whitespace-pre-wrap text-[11px] leading-snug ${config.inside.font}`}
+          className={`relative mt-1 line-clamp-[10] whitespace-pre-wrap text-[11px] leading-snug ${config.inside.font}`}
         >
           {message || "Your message will appear here…"}
         </p>
