@@ -371,7 +371,224 @@ const EXAMPLES = {
   },
 };
 
-export const getExample = (category, lang = "en") => {
+// Per-template example pools (more specific than category). Keyed by template id.
+// When a template has an entry here, it overrides the category pool.
+// Each entry has language-specific arrays; EN is a safe fallback.
+const TEMPLATE_EXAMPLES = {
+  // ============ Valentine's Week (per-day) ============
+  "vw-rose-day": {
+    en: [
+      "Roses remind me of you — their softness, their warmth, the way they light up a room. Happy Rose Day 🌹",
+      "A rose is just a rose. With you, it means forever. Happy Rose Day!",
+      "Sending you the prettiest rose in my heart today. Happy Rose Day ❤️",
+    ],
+    hi: [
+      "गुलाब की तरह ही तुम हो — कोमल, ख़ुशबूदार और मेरे दिल के करीब। रोज़ डे मुबारक! 🌹",
+      "एक गुलाब, एक वादा — आज और हमेशा के लिए।",
+    ],
+  },
+  "mr-vw-rose": { mr: [
+    "गुलाबाच्या पाकळ्यांइतकंच कोमल आहे तुझ्यासाठीचं माझं प्रेम. हॅपी रोझ डे! 🌹",
+    "हा गुलाब आणि तुझं हसू — दोन्ही माझ्या दिवसाची सुरुवात करतात. हॅपी रोझ डे!",
+  ]},
+  "hi-vw-rose": { hi: [
+    "गुलाब की तरह ही तुम हो — कोमल, ख़ुशबूदार और मेरे दिल के करीब। रोज़ डे मुबारक! 🌹",
+    "एक गुलाब, एक वादा — आज और हमेशा के लिए।",
+  ]},
+
+  "vw-propose-day": {
+    en: [
+      "I've been meaning to say this for a while. Will you be mine — today, tomorrow, and every day after? 💍",
+      "No grand speech, no perfect words. Just one question: will you?",
+      "Every good thing in my life became better because of you. Will you stay? ✨",
+    ],
+    hi: [
+      "आज वो सवाल पूछना है जो हर दिन दिल में आता है — क्या तुम मेरी/मेरे बनोगी/बनोगे? 💍",
+      "कोई बड़ा डायलॉग नहीं, बस एक सच्चा सवाल है। साथ दोगे/दोगी?",
+    ],
+  },
+  "mr-vw-propose": { mr: [
+    "आज एक प्रश्न विचारायचा आहे — तू माझी/माझा होशील का? 💍",
+    "शब्दांत सांगता येत नाही, पण दिलात आहेस तू. साथ देशील?",
+  ]},
+
+  "vw-chocolate-day": {
+    en: [
+      "If I had to pick between chocolate and you, I'd pick you. (Chocolate would be a very close second.) 🍫",
+      "Some things sweeten the day. Chocolate is one. You are every.",
+      "Happy Chocolate Day. Proof that the best things in life are sweet, and shared.",
+    ],
+    hi: [
+      "चॉकलेट मीठी है, पर तुम उससे भी मीठे/मीठी हो। हैप्पी चॉकलेट डे! 🍫",
+      "आज का दिन मीठा हो जाएगा अगर तुम साथ हो।",
+    ],
+  },
+  "mr-vw-chocolate": { mr: [
+    "चॉकलेटहून गोड आहेस तू. हॅपी चॉकलेट डे! 🍫",
+    "आज थोडा गोडवा — चॉकलेट आणि तुझ्यासोबत.",
+  ]},
+
+  "vw-teddy-day": {
+    en: [
+      "This card is a hug in disguise. And a teddy too. Happy Teddy Day 🧸",
+      "Every teddy I see reminds me of warm things. Like you.",
+      "A soft one, a cuddly one, a just-like-you one. Happy Teddy Day!",
+    ],
+    hi: [
+      "ये टेडी नहीं है, ये एक प्यारी झप्पी है तुम्हारे लिए। हैप्पी टेडी डे! 🧸",
+      "दिन में हो या रात में — एक टेडी और तुम, बस यही चाहिए।",
+    ],
+  },
+
+  "vw-promise-day": {
+    en: [
+      "One promise today: I'll keep choosing you, quietly and daily. Happy Promise Day 🤞",
+      "Not the big promises, the small ones — the 'I'll listen', 'I'll be there' kind. Those are yours.",
+    ],
+    hi: [
+      "एक वादा — हर छोटी बात में तुम्हारा साथ दूँगा/दूँगी। प्रॉमिस डे मुबारक 🤞",
+    ],
+  },
+
+  "vw-hug-day": {
+    en: [
+      "Consider yourself hugged. Tightly. For as long as you need. 🤗",
+      "The best hugs don't need words. This card is the word version of one.",
+      "Sending you an extra-long hug today. Keep it, it's yours. Happy Hug Day!",
+    ],
+    hi: [
+      "एक कस के गले लगना तुम्हारे नाम। हग डे मुबारक! 🤗",
+      "आज दूर हूँ तो ये झप्पी भेज रहा/रही हूँ — बहुत ज़रूरी थी।",
+    ],
+  },
+  "mr-vw-hug": { mr: [
+    "एक घट्ट मिठी तुझ्यासाठी. कुठेही असलास तरी पोहोचेल. 🤗",
+    "शब्दांना जमत नाही ते मिठी बोलते. आज तुझ्यासाठी.",
+  ]},
+
+  "vw-kiss-day": {
+    en: [
+      "A small thing, a big feeling. Happy Kiss Day 💋",
+      "Some moments are worth a thousand cards. This one is for one of those.",
+    ],
+    hi: [
+      "एक छोटा सा पल, पर बहुत बड़ी फीलिंग। किस डे मुबारक! 💋",
+    ],
+  },
+
+  "vw-valentines": {
+    en: [
+      "Happy Valentine's Day. I'd write a long poem but you already know all of it. ❤️",
+      "You're my favourite person. Today and every day. Be my Valentine?",
+      "Loving you is the easiest thing I do. Happy Valentine's Day.",
+    ],
+    hi: [
+      "हैप्पी वैलेंटाइन्स डे! तुम मेरी सबसे प्यारी वजह हो, हर दिन।",
+      "आज का दिन तुम्हारे नाम। वैलेंटाइन बनोगी/बनोगे?",
+    ],
+  },
+
+  // ============ Everyday (per-variant) ============
+  "everyday-good-morning": {
+    en: [
+      "Good morning! Hope your coffee is hot and your day is kinder than yesterday. ☀️",
+      "A little sunshine note to start your day. You've got this.",
+      "Good morning, you. Sending you a soft landing into today.",
+    ],
+    hi: [
+      "सुप्रभात! आज का दिन तुम्हारे लिए बहुत शुभ हो। ☀️",
+      "नमस्ते और एक बड़ी स्माइल तुम्हारे दिन की शुरुआत के लिए।",
+    ],
+  },
+  "mr-everyday-shubh-sakal": { mr: [
+    "शुभ सकाळ! आजचा दिवस तुझ्यासारखाच तेजस्वी होवो. ☀️",
+    "सकाळच्या पहिल्या किरणासारखी एक चांगली बातमी — तू आज माझ्या विचारात आहेस.",
+  ]},
+  "hi-everyday-suprabhat": { hi: [
+    "सुप्रभात! आज का दिन मुस्कुराहटों से भरा रहे। ☀️",
+    "सूरज की पहली किरण के साथ एक छोटी सी शुभकामना — तुम्हारा दिन बेहतरीन हो।",
+  ]},
+
+  "everyday-good-night": {
+    en: [
+      "Sleep well. The day was long, but it was yours. See you in the morning. 🌙",
+      "Close your eyes, let the day go. Tomorrow is a softer place.",
+      "Good night. Wherever you are, may your dreams be kind.",
+    ],
+    hi: [
+      "शुभ रात्रि! आज का दिन बीत गया, कल एक नया शुरू होगा। सपने अच्छे हों। 🌙",
+      "आँखें बंद करो, चैन की साँस लो। कल और बेहतर होगा।",
+    ],
+  },
+  "mr-everyday-shubh-ratri": { mr: [
+    "शुभ रात्री! आजचा दिवस चांगला गेला, आता गोड झोप लाग. 🌙",
+    "डोळे मिटून दिवस सोडून दे. उद्या नवं काहीतरी वाट पाहतंय.",
+  ]},
+  "hi-everyday-shubh-ratri": { hi: [
+    "शुभ रात्रि! दिन भर की थकान आज की नींद में खो जाए। 🌙",
+    "चाँद देख कर सो जाओ — कल फिर मिलेंगे।",
+  ]},
+  "hi-everyday-sweet-dreams": { hi: [
+    "मीठे सपने आएँ! सपने में मिलते हैं। ✨",
+    "तुम्हारी आँखों में आज रात सितारे तैरें।",
+  ]},
+  "everyday-sweet-dreams": {
+    en: [
+      "Sweet dreams. May tonight's dreams be the cozy kind — the ones you don't want to wake up from. ✨",
+      "May stars line your sleep and softness lead your morning.",
+    ],
+  },
+
+  "everyday-nice-day": {
+    en: [
+      "Have a good one. No pressure, no grand plans — just a day that feels like you. 🌼",
+      "Sending a little note into your day. Hope it's a gentle one.",
+    ],
+  },
+
+  "everyday-get-well": {
+    en: [
+      "Rest up. The world will still be here when you're back. Feel better soon. 🌷",
+      "Sending you soup, sunlight, and softness. Get well soon.",
+      "You're missed, but rest is the best gift you can give yourself right now.",
+    ],
+    hi: [
+      "जल्दी ठीक हो जाओ। तुम्हारे बिना दिन अधूरे लगते हैं। 🌷",
+      "थोड़ा आराम करो। बाकी सब बाद में।",
+    ],
+  },
+  "mr-everyday-get-well": { mr: [
+    "लवकर बरा/बरी हो. आराम कर, बाकी सगळं नंतर. 🌷",
+  ]},
+  "hi-everyday-get-well": { hi: [
+    "जल्दी ठीक हो जाओ। तुम्हारा हँसना मुझे याद आ रहा है। 🌷",
+  ]},
+
+  "everyday-congrats": {
+    en: [
+      "You did it! So proud of you. Wishing you many more of these moments. 🎊",
+      "Hard work, quiet hours, and now — a win. Well done!",
+      "Celebrate this. You earned it.",
+    ],
+    hi: [
+      "बधाई हो! ये तुम्हारी मेहनत का फल है। बहुत खुशी हुई। 🎊",
+      "कर दिखाया तुमने! आगे भी ऐसी ही जीतें मिलें।",
+    ],
+  },
+};
+
+export const getExample = (category, lang = "en", templateId) => {
+  // 1. Template-specific pool (most specific)
+  if (templateId) {
+    const tplPool = TEMPLATE_EXAMPLES[templateId];
+    if (tplPool) {
+      const tplLangPool = tplPool[lang] || tplPool.en;
+      if (tplLangPool && tplLangPool.length) {
+        return tplLangPool[Math.floor(Math.random() * tplLangPool.length)];
+      }
+    }
+  }
+  // 2. Category × lang fallback
   const categoryPool = EXAMPLES[category] || EXAMPLES.everyday;
   const langPool = categoryPool[lang] || categoryPool.en || EXAMPLES.everyday.en;
   return langPool[Math.floor(Math.random() * langPool.length)];

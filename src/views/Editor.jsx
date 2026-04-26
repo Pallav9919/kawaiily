@@ -84,7 +84,7 @@ export default function Editor() {
   useEffect(() => {
     if (!isExample) return;
     const tpl = TEMPLATES.find((t) => t.id === templateId);
-    const example = getExample(tpl?.category, tpl?.lang);
+    const example = getExample(tpl?.category, tpl?.lang, tpl?.id);
     if (example === message) return;
     setDraft((d) => ({ ...d, message: example, isExample: true }));
     requestAnimationFrame(() => {
@@ -108,7 +108,7 @@ export default function Editor() {
 
   const tryExample = () => {
     const tpl = TEMPLATES.find((t) => t.id === templateId);
-    const example = getExample(tpl?.category, tpl?.lang);
+    const example = getExample(tpl?.category, tpl?.lang, tpl?.id);
     setDraft((d) => ({ ...d, message: example, isExample: true }));
     requestAnimationFrame(() => {
       const el = messageRef.current;
