@@ -6,6 +6,7 @@ import { getDecoration } from "../components/decorations";
 import { CATEGORIES } from "../lib/categories";
 import { buildShareUrl } from "../lib/hash";
 import { useDraft } from "../lib/useDraft";
+import LivePreview from "../components/LivePreview";
 
 export default function Editor() {
   const [category, setCategory] = useState("all");
@@ -168,6 +169,17 @@ export default function Editor() {
             highlighted ? "ring-rose-400 ring-2 shadow-lg" : "ring-slate-200"
           }`}
         >
+          <div className="mb-5">
+            <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-400">
+              Live preview
+            </div>
+            <LivePreview
+              templateId={templateId}
+              to={to}
+              from={from}
+              message={message}
+            />
+          </div>
           <div className="grid gap-4 sm:grid-cols-2">
             <Field label="To" value={to} onChange={setTo} placeholder="Their name" />
             <Field label="From" value={from} onChange={setFrom} placeholder="Your name" />
