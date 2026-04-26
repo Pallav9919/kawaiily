@@ -54,8 +54,8 @@ export default function Viewer({ data }) {
   };
 
   return (
-    <div className="flex min-h-full items-center justify-center bg-gradient-to-br from-slate-900 via-rose-900 to-slate-900 p-4">
-      <div className="relative flex flex-col items-center">
+    <div className="flex min-h-full items-center justify-center overflow-x-hidden bg-gradient-to-br from-slate-900 via-rose-900 to-slate-900 p-4">
+      <div className="relative flex flex-col items-center pb-16">
         <AnimatePresence mode="wait">
           {!opened ? (
             <Envelope key="envelope" onOpen={() => setOpened(true)} />
