@@ -1,26 +1,15 @@
-import { lazy, Suspense, useEffect, useState } from "react";
+import { lazy, Suspense } from "react";
 import { Analytics } from "@vercel/analytics/react";
 import MadeBy from "./components/MadeBy";
 import ErrorBoundary from "./components/ErrorBoundary";
-import { decodeCard } from "./lib/hash";
+import { useCard } from "./lib/useCard";
 
 // Split bundles: Editor is the landing page for most users, Viewer only loads when opening a shared card.
 const Editor = lazy(() => import("./views/Editor"));
 const Viewer = lazy(() => import("./views/Viewer"));
 
 export default function App() {
-  const [data, setData] = useState(() =>
-    window.location.hash ? decodeCard(window.location.hash.slice(1)) : null
-  );
-
-  useEffect(() => {
-    const onHash = () =>
-      setData(
-        window.location.hash ? decodeCard(window.location.hash.slice(1)) : null
-      );
-    window.addEventListener("hashchange", onHash);
-    return () => window.removeEventListener("hashchange", onHash);
-  }, []);
+  const data = useCard();
 
   return (
     <>
