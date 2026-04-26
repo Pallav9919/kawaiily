@@ -375,23 +375,45 @@ const SharinganSpin = () => (
     <motion.div
       className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
       animate={{ rotate: 360 }}
-      transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+      transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
     >
-      <svg viewBox="0 0 200 200" width="260" height="260" style={{ opacity: 0.35 }}>
-        {/* iris */}
-        <circle cx="100" cy="100" r="80" fill="#dc2626" />
-        <circle cx="100" cy="100" r="80" fill="none" stroke="#000" strokeWidth="4" />
-        {/* three tomoe comma shapes */}
-        {[0, 120, 240].map((angle) => (
-          <g key={angle} transform={`rotate(${angle} 100 100)`}>
+      {/* Sasuke's Eternal Mangekyō Sharingan — from provided SVG */}
+      <svg viewBox="0 0 300 300" width="300" height="300" style={{ opacity: 0.75 }}>
+        <defs>
+          <radialGradient id="sasuke-iris-grad">
+            <stop offset="0" stopColor="#660000" stopOpacity="1" />
+            <stop offset="0.5" stopColor="#c30000" stopOpacity="1" />
+            <stop offset="1" stopColor="#a00000" stopOpacity="1" />
+          </radialGradient>
+          <g id="sasuke-tomoe">
             <path
-              d="M 100 40 C 115 40, 130 55, 130 70 C 130 60, 115 55, 100 65 Z"
+              fill="none"
+              stroke="#000"
+              strokeWidth="5"
+              d="M200,150 C 200,215 170,275 150,295 C 130,275 100,215 100,150 C 100,85 130,25 150,5 C 170,25 200,85 200,150 z"
+            />
+            <path
               fill="#000"
+              d="M 275,77.5 C 260,40 200,0 150,5 C 170,30 183.4,55.1 190,80 C 215,75 244.2,71.7 275,77.5 z"
+              id="sasuke-tomoe-top"
+            />
+            <use href="#sasuke-tomoe-top" transform="rotate(180 150 150)" />
+            <path
+              fill="#000"
+              d="M 150,258.7 C 141,244 131.5,195.8 128.6,162.4 L 150,150 171.4,162.4 C 168.5,195.8 159,244 150,258.7 z"
             />
           </g>
-        ))}
-        {/* pupil */}
-        <circle cx="100" cy="100" r="15" fill="#000" />
+        </defs>
+        <circle
+          cx="150"
+          cy="150"
+          r="145"
+          style={{ fill: "url(#sasuke-iris-grad)", stroke: "#000", strokeWidth: 10 }}
+        />
+        <use href="#sasuke-tomoe" />
+        <use href="#sasuke-tomoe" transform="rotate(120 150 150)" />
+        <use href="#sasuke-tomoe" transform="rotate(-120 150 150)" />
+        <circle cx="150" cy="150" r="20" fill="#a00000" />
       </svg>
     </motion.div>
   </Layer>
@@ -423,6 +445,45 @@ const MangekyoItachi = () => (
           d="M 177.6,10.7 C 135,68.4 155.4,100.7 179.8,118.5 C 260.9,160.6 274.8,214.5 255.9,244.9 C 237.3,191.9 198,172.4 158.5,194.9 C 86.9,238.6 40.7,231.2 15.7,196.6 C 58.2,203.1 109.1,193.5 107.9,128.3 C 109.5,97.6 111.5,16.6 177.6,10.7 z"
         />
         <circle cx="150" cy="150" r="20" fill="#a00000" />
+      </svg>
+    </motion.div>
+  </Layer>
+);
+
+const MadaraMangekyo = () => (
+  <Layer>
+    <motion.div
+      className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+      animate={{ rotate: 360 }}
+      transition={{ duration: 14, repeat: Infinity, ease: "linear" }}
+    >
+      {/* Madara's Eternal Mangekyō Sharingan — from provided SVG */}
+      <svg viewBox="0 0 300 300" width="300" height="300" style={{ opacity: 0.75 }}>
+        <defs>
+          <radialGradient id="madara-iris-grad">
+            <stop offset="0" stopColor="#660000" stopOpacity="1" />
+            <stop offset="0.5" stopColor="#c30000" stopOpacity="1" />
+            <stop offset="1" stopColor="#a00000" stopOpacity="1" />
+          </radialGradient>
+          <g id="madara-tomoe">
+            <circle fill="none" stroke="#000" strokeWidth="15" cx="150" cy="60" r="30" />
+            <path
+              fill="#000"
+              d="M 151.1 24.6 L 174.1 43.1 L 180 82.5 C 240.9 62.8 255 166.9 244.1 161.2 C 255 183.2 264.5 185 262.9 181.9 C 260.5 177.2 260.8 175.4 260.8 171 C 264.9 103.6 227 34 151.1 24.6 z"
+            />
+            <path fill="#000" d="M 115,250 L 115,290 L 150,295 L 185,290 L 185,250 L 115,250 z" />
+          </g>
+        </defs>
+        <circle
+          cx="150"
+          cy="150"
+          r="145"
+          style={{ fill: "url(#madara-iris-grad)", stroke: "#000", strokeWidth: 10 }}
+        />
+        <use href="#madara-tomoe" />
+        <use href="#madara-tomoe" transform="rotate(120 150 150)" />
+        <use href="#madara-tomoe" transform="rotate(-120 150 150)" />
+        <circle cx="150" cy="150" r="28" fill="#000" />
       </svg>
     </motion.div>
   </Layer>
@@ -500,6 +561,26 @@ const BloodDrip = ({ count = 10 }) => (
   </Layer>
 );
 
+const CharacterBg = ({ src, scale = 0.9, opacity = 0.45 }) => (
+  <Layer>
+    <div
+      className="absolute inset-0"
+      style={{
+        backgroundImage: `url(${src})`,
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: `auto ${scale * 100}%`,
+        opacity,
+        mixBlendMode: "screen",
+        filter: "drop-shadow(0 0 8px rgba(0,0,0,0.4))",
+      }}
+    />
+  </Layer>
+);
+
+const NarutoBg = () => <CharacterBg src="/anime/naruto.png" scale={0.95} opacity={0.55} />;
+const MinatoBg = () => <CharacterBg src="/anime/minato.png" scale={0.95} opacity={0.55} />;
+
 export const DECORATIONS = {
   none: () => null,
   hearts: Hearts,
@@ -522,8 +603,11 @@ export const DECORATIONS = {
   "ribbon-drift": RibbonDrift,
   "sharingan-spin": SharinganSpin,
   "mangekyo-itachi": MangekyoItachi,
+  "mangekyo-madara": MadaraMangekyo,
   "rinnegan-ripple": RinneganRipple,
   "blood-drip": BloodDrip,
+  "naruto-bg": NarutoBg,
+  "minato-bg": MinatoBg,
 };
 
 export const getDecoration = (id) => DECORATIONS[id] || DECORATIONS.none;

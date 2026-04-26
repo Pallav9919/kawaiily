@@ -3167,8 +3167,8 @@ export const TEMPLATES = [
     lang: "en",
     tier: "premium",
     cover: {
-      palette: "sunset",
-      decoration: "sparkle-trail",
+      palette: "thunder",
+      decoration: "naruto-bg",
       titleFont: "font-dancing",
       title: "Naruto",
       emoji: "🍥",
@@ -3178,13 +3178,13 @@ export const TEMPLATES = [
   },
   {
     id: "anime-madara",
-    name: "Madara — Rinnegan",
+    name: "Madara — Eternal Mangekyō",
     category: "anime",
     lang: "en",
     tier: "premium",
     cover: {
-      palette: "midnight",
-      decoration: "rinnegan-ripple",
+      palette: "crimson",
+      decoration: "mangekyo-madara",
       titleFont: "font-playfair",
       title: "Madara",
       emoji: "🌀",
@@ -3200,7 +3200,7 @@ export const TEMPLATES = [
     tier: "premium",
     cover: {
       palette: "thunder",
-      decoration: "firework-bursts",
+      decoration: "minato-bg",
       titleFont: "font-playfair",
       title: "Minato",
       emoji: "⚡",
