@@ -20,6 +20,10 @@ const GOOGLE_CSS =
   "family=Tiro+Devanagari+Marathi:ital@0;1&" +
   "family=Tiro+Tamil:ital@0;1&" +
   "family=Tiro+Bangla:ital@0;1&" +
+  "family=Tiro+Gujarati:ital@0;1&" +
+  "family=Tiro+Kannada:ital@0;1&" +
+  "family=Tiro+Telugu:ital@0;1&" +
+  "family=Tiro+Gurmukhi:ital@0;1&" +
   "display=swap";
 
 // Chrome UA ⇒ Google returns woff2 (smallest, modern)
