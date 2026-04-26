@@ -368,6 +368,107 @@ const RibbonDrift = ({ count = 12 }) => (
   </Layer>
 );
 
+// ============ Anime premium decorations ============
+
+const SharinganSpin = () => (
+  <Layer>
+    <motion.div
+      className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+      animate={{ rotate: 360 }}
+      transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+    >
+      <svg viewBox="0 0 200 200" width="260" height="260" style={{ opacity: 0.35 }}>
+        {/* iris */}
+        <circle cx="100" cy="100" r="80" fill="#dc2626" />
+        <circle cx="100" cy="100" r="80" fill="none" stroke="#000" strokeWidth="4" />
+        {/* three tomoe comma shapes */}
+        {[0, 120, 240].map((angle) => (
+          <g key={angle} transform={`rotate(${angle} 100 100)`}>
+            <path
+              d="M 100 40 C 115 40, 130 55, 130 70 C 130 60, 115 55, 100 65 Z"
+              fill="#000"
+            />
+          </g>
+        ))}
+        {/* pupil */}
+        <circle cx="100" cy="100" r="15" fill="#000" />
+      </svg>
+    </motion.div>
+  </Layer>
+);
+
+const RinneganRipple = () => (
+  <Layer>
+    <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+      <svg viewBox="0 0 200 200" width="260" height="260" style={{ opacity: 0.45 }}>
+        <circle cx="100" cy="100" r="90" fill="#7c3aed" />
+        {[80, 65, 50, 35, 20, 10].map((r, i) => (
+          <motion.circle
+            key={r}
+            cx="100"
+            cy="100"
+            r={r}
+            fill="none"
+            stroke="#1e1b4b"
+            strokeWidth="2.5"
+            animate={{ opacity: [0.4, 1, 0.4] }}
+            transition={{ duration: 3, repeat: Infinity, delay: i * 0.4 }}
+          />
+        ))}
+        <circle cx="100" cy="100" r="6" fill="#1e1b4b" />
+      </svg>
+    </div>
+  </Layer>
+);
+
+const BloodDrip = ({ count = 10 }) => (
+  <Layer>
+    {/* top band drip sources */}
+    {Array.from({ length: count }, (_, i) => {
+      const r = Math.sin(30 + i * 51.3) * 10000;
+      const rand = r - Math.floor(r);
+      const left = `${(i / count) * 100 + rand * 5}%`;
+      const delay = rand * 4;
+      const duration = 4 + rand * 3;
+      const len = 40 + rand * 60;
+      return (
+        <motion.div
+          key={i}
+          className="absolute top-0"
+          style={{ left }}
+          animate={{ opacity: [0, 1, 1, 0] }}
+          transition={{ duration, repeat: Infinity, delay }}
+        >
+          {/* vertical thin red streak */}
+          <div
+            style={{
+              width: 2,
+              height: len,
+              background: "linear-gradient(to bottom, rgba(220,38,38,0.9), rgba(127,29,29,0.6) 60%, transparent)",
+              boxShadow: "0 0 6px rgba(220,38,38,0.6)",
+            }}
+          />
+          {/* drop at end */}
+          <motion.div
+            className="absolute"
+            style={{
+              left: -3,
+              top: len - 3,
+              width: 8,
+              height: 10,
+              borderRadius: "50% 50% 50% 50% / 40% 40% 60% 60%",
+              background: "#b91c1c",
+              boxShadow: "0 0 6px rgba(220,38,38,0.8)",
+            }}
+            animate={{ y: [0, 10, 20], opacity: [1, 1, 0] }}
+            transition={{ duration, repeat: Infinity, delay, ease: "easeIn" }}
+          />
+        </motion.div>
+      );
+    })}
+  </Layer>
+);
+
 export const DECORATIONS = {
   none: () => null,
   hearts: Hearts,
@@ -388,6 +489,9 @@ export const DECORATIONS = {
   "cupid-hearts": CupidHearts,
   "diya-glow": DiyaGlow,
   "ribbon-drift": RibbonDrift,
+  "sharingan-spin": SharinganSpin,
+  "rinnegan-ripple": RinneganRipple,
+  "blood-drip": BloodDrip,
 };
 
 export const getDecoration = (id) => DECORATIONS[id] || DECORATIONS.none;
