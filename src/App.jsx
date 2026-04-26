@@ -1,6 +1,7 @@
 import { lazy, Suspense, useEffect, useState } from "react";
 import { Analytics } from "@vercel/analytics/react";
 import MadeBy from "./components/MadeBy";
+import ErrorBoundary from "./components/ErrorBoundary";
 import { decodeCard } from "./lib/hash";
 
 // Split bundles: Editor is the landing page for most users, Viewer only loads when opening a shared card.
@@ -23,9 +24,11 @@ export default function App() {
 
   return (
     <>
-      <Suspense fallback={<LoadingFallback />}>
-        {data && data.m ? <Viewer data={data} /> : <Editor />}
-      </Suspense>
+      <ErrorBoundary>
+        <Suspense fallback={<LoadingFallback />}>
+          {data && data.m ? <Viewer data={data} /> : <Editor />}
+        </Suspense>
+      </ErrorBoundary>
       <MadeBy />
       <Analytics />
     </>
