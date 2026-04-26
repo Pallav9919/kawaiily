@@ -3173,7 +3173,7 @@ export const TEMPLATES = [
       title: "Naruto",
       emoji: "🍥",
     },
-    inside: { palette: "sunset", decoration: "petal-shower", font: "font-playfair" },
+    inside: { palette: "midnight", decoration: "rasenshuriken", font: "font-playfair" },
     reveal: "burst",
   },
   {

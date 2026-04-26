@@ -581,6 +581,106 @@ const CharacterBg = ({ src, scale = 0.9, opacity = 0.45 }) => (
 const NarutoBg = () => <CharacterBg src="/anime/naruto.png" scale={0.95} opacity={0.55} />;
 const MinatoBg = () => <CharacterBg src="/anime/minato.png" scale={0.95} opacity={0.55} />;
 
+const Rasenshuriken = () => (
+  <Layer>
+    {/* Four rotating wind blades */}
+    <motion.div
+      className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+      animate={{ rotate: 360 }}
+      transition={{ duration: 1.2, repeat: Infinity, ease: "linear" }}
+    >
+      <svg viewBox="0 0 400 400" width="420" height="420" style={{ opacity: 0.8 }}>
+        <defs>
+          <radialGradient id="rs-core" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="#ffffff" stopOpacity="1" />
+            <stop offset="30%" stopColor="#e0f2fe" stopOpacity="1" />
+            <stop offset="65%" stopColor="#7dd3fc" stopOpacity="0.95" />
+            <stop offset="100%" stopColor="#0284c7" stopOpacity="0" />
+          </radialGradient>
+          <linearGradient id="rs-blade" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#bae6fd" stopOpacity="0.9" />
+            <stop offset="50%" stopColor="#7dd3fc" stopOpacity="0.7" />
+            <stop offset="100%" stopColor="#0ea5e9" stopOpacity="0" />
+          </linearGradient>
+          <filter id="rs-glow">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
+        {/* 4 shuriken wind blades */}
+        <g filter="url(#rs-glow)">
+          {[0, 90, 180, 270].map((angle) => (
+            <g key={angle} transform={`rotate(${angle} 200 200)`}>
+              {/* blade: narrow at center, wider tapering outward, pointed tip */}
+              <path
+                d="M 200 200 L 200 185 Q 260 180 330 170 L 380 200 L 330 230 Q 260 220 200 215 Z"
+                fill="url(#rs-blade)"
+              />
+              {/* inner wind streaks */}
+              <path
+                d="M 215 200 L 260 195 L 320 195 L 360 200 L 320 205 L 260 205 Z"
+                fill="#fff"
+                opacity="0.3"
+              />
+            </g>
+          ))}
+        </g>
+      </svg>
+    </motion.div>
+
+    {/* Glowing core — spins opposite direction for contrast, stays centered */}
+    <motion.div
+      className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+      animate={{ rotate: -360 }}
+      transition={{ duration: 0.8, repeat: Infinity, ease: "linear" }}
+    >
+      <svg viewBox="0 0 200 200" width="180" height="180" style={{ opacity: 0.95 }}>
+        {/* outer sphere halo */}
+        <circle cx="100" cy="100" r="75" fill="url(#rs-core-halo)" />
+        <defs>
+          <radialGradient id="rs-core-halo">
+            <stop offset="0%" stopColor="#ffffff" stopOpacity="0.9" />
+            <stop offset="50%" stopColor="#bae6fd" stopOpacity="0.7" />
+            <stop offset="100%" stopColor="#0284c7" stopOpacity="0" />
+          </radialGradient>
+        </defs>
+        {/* swirling rings inside the sphere */}
+        {[0, 45, 90, 135].map((a) => (
+          <ellipse
+            key={a}
+            cx="100"
+            cy="100"
+            rx="60"
+            ry="18"
+            fill="none"
+            stroke="#ffffff"
+            strokeWidth="2.5"
+            opacity="0.55"
+            transform={`rotate(${a} 100 100)`}
+          />
+        ))}
+        {/* bright center */}
+        <circle cx="100" cy="100" r="14" fill="#ffffff" />
+      </svg>
+    </motion.div>
+
+    {/* Subtle pulse behind everything */}
+    <motion.div
+      className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full"
+      style={{
+        width: 300,
+        height: 300,
+        background: "radial-gradient(circle, rgba(125,211,252,0.35) 0%, transparent 70%)",
+      }}
+      animate={{ scale: [0.9, 1.1, 0.9], opacity: [0.6, 0.9, 0.6] }}
+      transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+    />
+  </Layer>
+);
+
 export const DECORATIONS = {
   none: () => null,
   hearts: Hearts,
@@ -608,6 +708,7 @@ export const DECORATIONS = {
   "blood-drip": BloodDrip,
   "naruto-bg": NarutoBg,
   "minato-bg": MinatoBg,
+  rasenshuriken: Rasenshuriken,
 };
 
 export const getDecoration = (id) => DECORATIONS[id] || DECORATIONS.none;
