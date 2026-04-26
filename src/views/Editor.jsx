@@ -18,7 +18,7 @@ import { useToast } from "../components/Toast";
 export default function Editor() {
   const route = typeof window !== "undefined" ? parseCategoryRoute(window.location.pathname) : null;
   const [category, setCategory] = useState(route?.category || "all");
-  const [languages, setLanguages] = useState([]); // empty = all
+  const [languages, setLanguages] = useState([]);
   const [query, setQuery] = useState("");
   const [draft, setDraft] = useDraft({
     templateId: TEMPLATES[0].id,
@@ -26,11 +26,12 @@ export default function Editor() {
     to: "",
     message: "",
     isExample: false,
-    mode: "template", // "template" | "tweak" | "scratch"
-    overrides: {}, // for tweak mode
-    custom: null, // for scratch mode
+    mode: "template",
+    overrides: {},
+    custom: null,
+    step: 1, // 1 = Design, 2 = Write
   });
-  const { templateId, from, to, message, isExample, mode, overrides, custom } = draft;
+  const { templateId, from, to, message, isExample, mode, overrides, custom, step } = draft;
   const setTemplateId = (templateId) => setDraft((d) => ({ ...d, templateId }));
   const setFrom = (from) => setDraft((d) => ({ ...d, from }));
   const setTo = (to) => setDraft((d) => ({ ...d, to }));
@@ -40,14 +41,12 @@ export default function Editor() {
     setDraft((d) => ({ ...d, overrides: typeof updater === "function" ? updater(d.overrides || {}) : updater }));
   const setCustom = (updater) =>
     setDraft((d) => ({ ...d, custom: typeof updater === "function" ? updater(d.custom) : updater }));
+  const setStep = (step) => setDraft((d) => ({ ...d, step }));
 
   const [url, setUrl] = useState("");
   const [urlStale, setUrlStale] = useState(false);
   const [copied, setCopied] = useState(false);
-  const formRef = useRef(null);
-  const tweakRef = useRef(null);
   const messageRef = useRef(null);
-  const [highlighted, setHighlighted] = useState(false);
   const [placeholder] = useState(pickPlaceholder);
   const toast = useToast();
 
@@ -66,6 +65,7 @@ export default function Editor() {
   }, [category, languages, query]);
 
   const canGenerate = message.trim().length > 0;
+  const canProceed = mode === "scratch" ? !!custom : !!templateId;
 
   const resolvedConfig = useMemo(
     () => resolveCardConfig({ mode, templateId, overrides, custom }),
@@ -88,7 +88,7 @@ export default function Editor() {
   useEffect(() => {
     if (url) setUrlStale(true);
     setCopied(false);
-  }, [templateId, from, to, message]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [templateId, from, to, message, overrides, custom]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (!filtered.find((t) => t.id === templateId) && filtered[0]) {
@@ -96,15 +96,12 @@ export default function Editor() {
     }
   }, [filtered, templateId]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Seed custom config from the current template when user first enters scratch mode.
   useEffect(() => {
     if (mode === "scratch" && !custom) {
       setCustom(templateAsCustom(templateId));
     }
   }, [mode]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // If the current message is still the auto-filled example, refresh it
-  // when user switches to a different template (different category/lang).
   useEffect(() => {
     if (!isExample) return;
     const tpl = TEMPLATES.find((t) => t.id === templateId);
@@ -120,19 +117,7 @@ export default function Editor() {
     });
   }, [templateId]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const selectTemplate = (id) => {
-    setTemplateId(id);
-    requestAnimationFrame(() => {
-      // In Tweak mode, scroll to the tweak panel; otherwise the message form.
-      const target = mode === "tweak" ? tweakRef.current : formRef.current;
-      target?.scrollIntoView({ behavior: "smooth", block: "start" });
-      if (mode !== "tweak") {
-        setTimeout(() => messageRef.current?.focus({ preventScroll: true }), 450);
-      }
-    });
-    setHighlighted(true);
-    setTimeout(() => setHighlighted(false), 1200);
-  };
+  const selectTemplate = (id) => setTemplateId(id);
 
   const tryExample = () => {
     const tpl = TEMPLATES.find((t) => t.id === templateId);
@@ -145,6 +130,16 @@ export default function Editor() {
         el.style.height = Math.min(el.scrollHeight, 400) + "px";
       }
     });
+  };
+
+  const goToWrite = () => {
+    setStep(2);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const goToDesign = () => {
+    setStep(1);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const generate = () => {
@@ -173,8 +168,6 @@ export default function Editor() {
 
   const share = async () => {
     if (!url) return;
-    // Only send the URL — the OG preview card carries the visual context.
-    // Including text duplicates the URL in WhatsApp/Messenger previews.
     if (navigator.share) {
       try {
         await navigator.share({ url });
@@ -182,7 +175,6 @@ export default function Editor() {
         /* user cancelled */
       }
     } else {
-      // WhatsApp Web fallback — text is the URL by itself
       window.open(
         `https://wa.me/?text=${encodeURIComponent(url)}`,
         "_blank",
@@ -192,88 +184,139 @@ export default function Editor() {
   };
 
   return (
-    <div className="min-h-full bg-gradient-to-b from-rose-50 via-white to-indigo-50 p-6">
+    <div className="min-h-full bg-gradient-to-b from-rose-50 via-white to-indigo-50 p-6 pb-24">
       <div className="mx-auto max-w-3xl">
-        <header className="mb-8 text-center">
+        <header className="mb-6 text-center">
           <h1 className="text-4xl font-bold tracking-tight text-slate-800">
             {route ? route.h1 : "Kawaiily 💌"}
           </h1>
           <p className="mt-2 text-slate-600">
             {route
-              ? "Pick a design, write your note, share the link. Free, no sign-up."
+              ? "Pick a design, write your note, share the link."
               : "Create a personalised card and share with a link. No sign-up."}
           </p>
         </header>
 
-        <ModeToggle mode={mode} onChange={setMode} />
+        <Stepper step={step} onGoTo={(s) => (s === 1 ? goToDesign() : canProceed && goToWrite())} canGoNext={canProceed} />
 
-        {mode !== "scratch" && (
-          <TemplateGallery
-            templates={filtered}
-            category={category}
-            onCategoryChange={setCategory}
-            languages={languages}
-            onLanguagesChange={setLanguages}
-            query={query}
-            onQueryChange={setQuery}
-            selectedId={templateId}
-            onSelect={selectTemplate}
-          />
-        )}
+        {step === 1 && (
+          <>
+            <ModeToggle mode={mode} onChange={setMode} />
 
-        {mode === "tweak" && (
-          <div ref={tweakRef} className="mb-6 scroll-mt-4">
-            <TweakPanel templateId={templateId} overrides={overrides} onChange={setOverrides} />
-          </div>
-        )}
+            {mode !== "scratch" && (
+              <TemplateGallery
+                templates={filtered}
+                category={category}
+                onCategoryChange={setCategory}
+                languages={languages}
+                onLanguagesChange={setLanguages}
+                query={query}
+                onQueryChange={setQuery}
+                selectedId={templateId}
+                onSelect={selectTemplate}
+              />
+            )}
 
-        {mode === "scratch" && (
-          <div className="mb-6">
-            <ScratchPanel custom={custom || SCRATCH_STARTER} onChange={setCustom} />
-          </div>
-        )}
+            {mode === "tweak" && (
+              <div className="mb-6">
+                <TweakPanel templateId={templateId} overrides={overrides} onChange={setOverrides} />
+              </div>
+            )}
 
-        <section
-          ref={formRef}
-          className={`scroll-mt-4 rounded-2xl bg-white p-6 shadow-sm ring-1 transition-all duration-500 ${
-            highlighted ? "shadow-lg ring-2 ring-rose-400" : "ring-slate-200"
-          }`}
-        >
-          <div className="mb-5">
-            <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-400">
-              Live preview
+            {mode === "scratch" && (
+              <div className="mb-6">
+                <ScratchPanel custom={custom || SCRATCH_STARTER} onChange={setCustom} />
+              </div>
+            )}
+
+            {/* Sticky Next button */}
+            <div className="fixed inset-x-0 bottom-0 z-40 border-t border-slate-200 bg-white/95 p-3 shadow-lg backdrop-blur">
+              <div className="mx-auto flex max-w-3xl items-center justify-between gap-3">
+                <div className="flex-1 text-xs text-slate-500">
+                  {mode === "template" && "Pick a design →"}
+                  {mode === "tweak" && "Tweak as you like →"}
+                  {mode === "scratch" && "Design your own →"}
+                </div>
+                <button
+                  disabled={!canProceed}
+                  onClick={goToWrite}
+                  className="rounded-lg bg-rose-500 px-6 py-2.5 font-semibold text-white shadow hover:bg-rose-600 disabled:cursor-not-allowed disabled:bg-slate-300"
+                >
+                  Next: Write message →
+                </button>
+              </div>
             </div>
-            <LivePreview config={resolvedConfig} to={to} from={from} message={message} />
-          </div>
+          </>
+        )}
 
-          <MessageForm
-            to={to}
-            from={from}
-            message={message}
-            placeholder={placeholder}
-            canGenerate={canGenerate}
-            onToChange={setTo}
-            onFromChange={setFrom}
-            onMessageChange={setMessage}
-            onTryExample={tryExample}
-            messageRef={messageRef}
-          />
+        {step === 2 && (
+          <>
+            <button
+              onClick={goToDesign}
+              className="mb-4 inline-flex items-center gap-1 text-sm text-slate-600 underline hover:text-slate-900"
+            >
+              ← Back to design
+            </button>
 
-          <ShareActions
-            url={url}
-            urlStale={urlStale}
-            copied={copied}
-            canGenerate={canGenerate}
-            onGenerate={generate}
-            onShare={share}
-            onCopy={copy}
-          />
-        </section>
+            <section className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
+              <div className="mb-5">
+                <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-400">
+                  Preview
+                </div>
+                <LivePreview config={resolvedConfig} to={to} from={from} message={message} />
+              </div>
+
+              <MessageForm
+                to={to}
+                from={from}
+                message={message}
+                placeholder={placeholder}
+                canGenerate={canGenerate}
+                onToChange={setTo}
+                onFromChange={setFrom}
+                onMessageChange={setMessage}
+                onTryExample={tryExample}
+                messageRef={messageRef}
+              />
+
+              <ShareActions
+                url={url}
+                urlStale={urlStale}
+                copied={copied}
+                canGenerate={canGenerate}
+                onGenerate={generate}
+                onShare={share}
+                onCopy={copy}
+              />
+            </section>
+          </>
+        )}
 
         <footer className="mt-8 text-center text-xs text-slate-400">
           Your message is encoded in the URL — nothing is sent to a server.
         </footer>
       </div>
+    </div>
+  );
+}
+
+function Stepper({ step, onGoTo, canGoNext }) {
+  return (
+    <div className="mb-5 flex items-center justify-center gap-3 text-xs font-semibold uppercase tracking-wide text-slate-500">
+      <button
+        onClick={() => onGoTo(1)}
+        className={`rounded-full px-3 py-1 transition ${step === 1 ? "bg-slate-900 text-white" : "hover:text-slate-800"}`}
+      >
+        1. Design
+      </button>
+      <span className="text-slate-300">—</span>
+      <button
+        onClick={() => onGoTo(2)}
+        disabled={!canGoNext && step !== 2}
+        className={`rounded-full px-3 py-1 transition ${step === 2 ? "bg-slate-900 text-white" : "hover:text-slate-800 disabled:cursor-not-allowed disabled:opacity-50"}`}
+      >
+        2. Write & share
+      </button>
     </div>
   );
 }
