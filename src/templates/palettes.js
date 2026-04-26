@@ -52,6 +52,16 @@ export const PALETTES = {
     inside: "bg-pink-50 text-fuchsia-900",
     accent: "text-fuchsia-600",
   },
+  crimson: {
+    cover: "bg-gradient-to-br from-black via-red-900 to-red-700 text-red-100",
+    inside: "bg-red-950 text-red-100",
+    accent: "text-red-400",
+  },
+  thunder: {
+    cover: "bg-gradient-to-br from-black via-zinc-900 to-yellow-600 text-yellow-100",
+    inside: "bg-zinc-950 text-yellow-100",
+    accent: "text-yellow-400",
+  },
 };
 
 export const getPalette = (id) => PALETTES[id] || PALETTES.rose;
