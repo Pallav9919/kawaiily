@@ -96,12 +96,16 @@ export default function Editor() {
     }
   }, [filtered, templateId]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  const prevModeRef = useRef(mode);
   useEffect(() => {
     if (mode === "scratch" && !custom) {
       setCustom(templateAsCustom(templateId));
     }
-    // Scratch mode has no Step 1 gallery — always skip to step 2 (the builder page).
+    // Scratch mode has no Step 1 gallery — skip to step 2 (the builder page).
     if (mode === "scratch" && step === 1) setStep(2);
+    // Coming from scratch into template/tweak: send them back to the gallery (step 1).
+    if (prevModeRef.current === "scratch" && mode !== "scratch") setStep(1);
+    prevModeRef.current = mode;
   }, [mode]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
@@ -233,7 +237,7 @@ export default function Editor() {
 
             <StickyNext
               hint={mode === "template" ? "Pick a design →" : "Pick a base template →"}
-              label="Next: Write message →"
+              label={mode === "tweak" ? "Next: Tweak & write →" : "Next: Write message →"}
               disabled={!canProceed}
               onClick={goNext}
             />
