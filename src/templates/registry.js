@@ -1295,8 +1295,8 @@ export const TEMPLATES = [
     name: "Aathvan",
     category: "miss",
     lang: "mr",
-    cover: { palette: "midnight", decoration: "stars", titleFont: "font-marathi", title: "तुझी आठवण येते", emoji: "🌙" },
-    inside: { palette: "midnight", decoration: "none", font: "font-marathi" },
+    cover: { palette: "lavender", decoration: "cupid-hearts", titleFont: "font-marathi", title: "तुझी आठवण येते", emoji: "💭" },
+    inside: { palette: "lavender", decoration: "none", font: "font-marathi" },
     reveal: "fade",
   },
 
