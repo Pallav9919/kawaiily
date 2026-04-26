@@ -191,7 +191,7 @@ const FallingEmoji = ({ emoji, count = 16, seed = 10, sizeAdjust = 0, slower = 0
         className="absolute"
         style={{ left: p.left, top: -40, fontSize: p.size + sizeAdjust }}
         initial={{ y: 0, x: 0, rotate: 0, opacity: 0 }}
-        animate={{ y: "110vh", x: p.drift, rotate: p.rotate, opacity: [0, 1, 1, 0.85] }}
+        animate={{ y: "110%", x: p.drift, rotate: p.rotate, opacity: [0, 1, 1, 0.85] }}
         transition={{ duration: p.duration + slower, repeat: Infinity, delay: p.delay, ease: "linear" }}
       >
         {emoji}
@@ -210,7 +210,7 @@ const TeddyDrift = ({ count = 10 }) => (
         className="absolute"
         style={{ left: p.left, top: -50, fontSize: p.size + 6 }}
         initial={{ y: 0, x: 0, rotate: -10, opacity: 0 }}
-        animate={{ y: "110vh", x: [p.drift, -p.drift, p.drift], rotate: [-10, 10, -10], opacity: [0, 1, 1, 0.85] }}
+        animate={{ y: "110%", x: [p.drift, -p.drift, p.drift], rotate: [-10, 10, -10], opacity: [0, 1, 1, 0.85] }}
         transition={{ duration: p.duration + 3, repeat: Infinity, delay: p.delay, ease: "easeInOut" }}
       >
         🧸
@@ -229,7 +229,7 @@ const PetalShower = ({ count = 22 }) => {
           className="absolute"
           style={{ left: p.left, top: -40, fontSize: p.size - 4 }}
           initial={{ y: 0, x: 0, rotate: 0, opacity: 0 }}
-          animate={{ y: "110vh", x: [p.drift, -p.drift], rotate: [0, 360], opacity: [0, 1, 1, 0.9] }}
+          animate={{ y: "110%", x: [p.drift, -p.drift], rotate: [0, 360], opacity: [0, 1, 1, 0.9] }}
           transition={{ duration: p.duration + 2, repeat: Infinity, delay: p.delay, ease: "easeInOut" }}
         >
           {emojis[i % emojis.length]}
@@ -297,7 +297,7 @@ const SnowFall = ({ count = 24 }) => (
         className="absolute text-white"
         style={{ left: p.left, top: -20, fontSize: p.size - 6, opacity: 0.85 }}
         initial={{ y: 0, x: 0 }}
-        animate={{ y: "110vh", x: [p.drift, -p.drift, p.drift] }}
+        animate={{ y: "110%", x: [p.drift, -p.drift, p.drift] }}
         transition={{ duration: p.duration + 4, repeat: Infinity, delay: p.delay, ease: "linear" }}
       >
         ❄
@@ -314,7 +314,7 @@ const CupidHearts = ({ count = 10 }) => (
         className="absolute"
         style={{ left: p.left, bottom: -40, fontSize: p.size }}
         initial={{ y: 0, x: 0, opacity: 0 }}
-        animate={{ y: "-110vh", x: [0, p.drift, -p.drift, 0], opacity: [0, 1, 1, 0.8] }}
+        animate={{ y: "-110%", x: [0, p.drift, -p.drift, 0], opacity: [0, 1, 1, 0.8] }}
         transition={{ duration: p.duration + 3, repeat: Infinity, delay: p.delay, ease: "easeInOut" }}
       >
         💘
@@ -356,7 +356,7 @@ const RibbonDrift = ({ count = 12 }) => (
         className="absolute"
         style={{ left: p.left, top: -40, fontSize: p.size }}
         initial={{ y: 0, x: 0, rotate: 0, opacity: 0 }}
-        animate={{ y: "110vh", x: [p.drift, -p.drift * 1.5, p.drift], rotate: [0, 180, 360], opacity: [0, 1, 1, 0.9] }}
+        animate={{ y: "110%", x: [p.drift, -p.drift * 1.5, p.drift], rotate: [0, 180, 360], opacity: [0, 1, 1, 0.9] }}
         transition={{ duration: p.duration + 2, repeat: Infinity, delay: p.delay, ease: "easeInOut" }}
       >
         🎀
