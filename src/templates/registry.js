@@ -3152,7 +3152,7 @@ export const TEMPLATES = [
     tier: "premium",
     cover: {
       palette: "crimson",
-      decoration: "sharingan-spin",
+      decoration: "mangekyo-itachi",
       titleFont: "font-playfair",
       title: "Itachi",
       emoji: "🜲",

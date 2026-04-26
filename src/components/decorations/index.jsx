@@ -397,6 +397,47 @@ const SharinganSpin = () => (
   </Layer>
 );
 
+const MangekyoItachi = () => (
+  <Layer>
+    <motion.div
+      className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+      animate={{ rotate: 360 }}
+      transition={{ duration: 14, repeat: Infinity, ease: "linear" }}
+    >
+      <svg viewBox="0 0 200 200" width="280" height="280" style={{ opacity: 0.55 }}>
+        {/* iris */}
+        <circle cx="100" cy="100" r="85" fill="#dc2626" />
+        <circle cx="100" cy="100" r="85" fill="none" stroke="#0a0a0a" strokeWidth="5" />
+        {/* outer red glow ring */}
+        <circle cx="100" cy="100" r="78" fill="none" stroke="#ef4444" strokeWidth="1.5" opacity="0.7" />
+
+        {/* Itachi's Mangekyō: three-pronged pinwheel (three curved blades + thin triangle spokes) */}
+        {[0, 120, 240].map((angle) => (
+          <g key={angle} transform={`rotate(${angle} 100 100)`}>
+            {/* broad curved blade */}
+            <path
+              d="M 100 100
+                 Q 100 35 130 30
+                 Q 120 55 100 100 Z"
+              fill="#0a0a0a"
+            />
+            {/* thin triangular spoke between blades */}
+            <path
+              d="M 100 100 L 112 36 L 100 34 Z"
+              fill="#0a0a0a"
+              opacity="0.85"
+            />
+          </g>
+        ))}
+
+        {/* center pupil with red highlight */}
+        <circle cx="100" cy="100" r="10" fill="#0a0a0a" />
+        <circle cx="100" cy="100" r="10" fill="none" stroke="#7f1d1d" strokeWidth="1" />
+      </svg>
+    </motion.div>
+  </Layer>
+);
+
 const RinneganRipple = () => (
   <Layer>
     <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
@@ -490,6 +531,7 @@ export const DECORATIONS = {
   "diya-glow": DiyaGlow,
   "ribbon-drift": RibbonDrift,
   "sharingan-spin": SharinganSpin,
+  "mangekyo-itachi": MangekyoItachi,
   "rinnegan-ripple": RinneganRipple,
   "blood-drip": BloodDrip,
 };
