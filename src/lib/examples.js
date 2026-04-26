@@ -375,6 +375,12 @@ const EXAMPLES = {
 // occasion-specific examples. Checked in order; first match wins.
 // This is more scalable than listing every template ID because we have 280 templates.
 const OCCASION_RULES = [
+  // Anime characters
+  { match: /^anime-sasuke$/, key: "anime-sasuke" },
+  { match: /^anime-itachi$/, key: "anime-itachi" },
+  { match: /^anime-naruto$/, key: "anime-naruto" },
+  { match: /^anime-madara$/, key: "anime-madara" },
+  { match: /^anime-minato$/, key: "anime-minato" },
   // Valentine's week days (EN id prefix: vw-* ; language: *-vw-*)
   { match: /(^vw-rose-day$|-vw-rose$)/, key: "rose-day" },
   { match: /(^vw-propose-day$|-vw-propose$)/, key: "propose-day" },
@@ -433,6 +439,50 @@ const detectOccasion = (templateId) => {
 
 // Occasion-specific example pools. Fall back to category pool if occasion not here.
 const OCCASION_EXAMPLES = {
+  // ---------- Anime characters ----------
+  "anime-sasuke": {
+    en: [
+      "You have awakened something in me I can't look away from. My world has you at the centre of it now.",
+      "I didn't expect to need anyone. Then you happened — and I couldn't forget. Like those eyes, I guess. 🩸",
+      "I used to walk alone. I don't want to anymore. You found me, and I don't plan on losing you.",
+      "Revenge isn't what drives me anymore. You are.",
+    ],
+  },
+  "anime-itachi": {
+    en: [
+      "You're in my genjutsu. 72 hours. You won't want to leave.",
+      "Some people protect the ones they love from far away. I just wanted you to know — I'm still watching over you. 🜲",
+      "People live their lives bound by what they accept as correct and true — that's how they define 'reality'. But my reality, I realised, has always been you.",
+      "Forgive me. For the distance, for the silence, for everything I couldn't say. You were always my favourite person.",
+      "I told you it's a lie. About the foolish little brother thing. I've just always loved you too much to say it simply.",
+    ],
+  },
+  "anime-naruto": {
+    en: [
+      "I'll never give up on you. Believe it. 🍥",
+      "You make every day feel like I'm finally becoming Hokage of something good. Thank you for being in my life.",
+      "When I'm with you, even ramen tastes better. That's the highest compliment I have.",
+      "No matter how hard the day, remembering you reminds me to keep going. Dattebayo. 💛",
+      "You don't need to change a single thing. You're already my favourite person in every village.",
+    ],
+  },
+  "anime-madara": {
+    en: [
+      "Wake up to reality. You've been on my mind for far too long to ignore. 🌀",
+      "In this world, wherever there is light — there are also shadows. I don't mind either, as long as you're in both.",
+      "Those who forgive themselves, and are able to accept their true nature... they are the strong ones. Be strong with me.",
+      "The concept of 'hope' is nothing more than giving up. A real hero never has a reason to give up. Neither do I — when it comes to you.",
+    ],
+  },
+  "anime-minato": {
+    en: [
+      "Wherever you are, I can reach you in a flash. ⚡ Just say the word.",
+      "You are the warmth I'd run through any storm to protect. That's a promise.",
+      "A father, a husband, a friend — titles are easy. Showing up for you is the real thing. And I always will.",
+      "Some bonds move faster than the Flying Thunder God. Ours is one of them. 💛",
+    ],
+  },
+
   // ---------- Valentine's Week days ----------
   "rose-day": {
     en: [
