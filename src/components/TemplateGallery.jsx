@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { CATEGORIES } from "../lib/categories";
+import { LANGUAGES } from "../lib/languages";
 import { getPalette } from "../templates/palettes";
 import { getDecoration } from "./decorations";
 
@@ -7,11 +8,21 @@ export default function TemplateGallery({
   templates,
   category,
   onCategoryChange,
+  languages,
+  onLanguagesChange,
   query,
   onQueryChange,
   selectedId,
   onSelect,
 }) {
+  const toggleLang = (id) => {
+    if (languages.includes(id)) {
+      onLanguagesChange(languages.filter((l) => l !== id));
+    } else {
+      onLanguagesChange([...languages, id]);
+    }
+  };
+
   return (
     <>
       <section className="mb-4">
@@ -29,6 +40,36 @@ export default function TemplateGallery({
               {c.label}
             </button>
           ))}
+        </div>
+        <div className="mt-2 flex flex-wrap items-center gap-2">
+          <span className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+            Languages
+          </span>
+          {LANGUAGES.map((l) => {
+            const active = languages.includes(l.id);
+            return (
+              <button
+                key={l.id}
+                onClick={() => toggleLang(l.id)}
+                aria-pressed={active}
+                className={`rounded-full px-3 py-1 text-xs font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-400 ${
+                  active
+                    ? "bg-rose-500 text-white"
+                    : "bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-slate-50"
+                }`}
+              >
+                {l.label}
+              </button>
+            );
+          })}
+          {languages.length > 0 && (
+            <button
+              onClick={() => onLanguagesChange([])}
+              className="text-xs text-slate-500 underline hover:text-slate-800"
+            >
+              Clear
+            </button>
+          )}
         </div>
         <div className="relative mt-3">
           <input
@@ -53,7 +94,7 @@ export default function TemplateGallery({
       <section className="mb-6">
         {templates.length === 0 ? (
           <div className="rounded-xl bg-white p-8 text-center text-slate-500 ring-1 ring-slate-200">
-            No templates match &ldquo;{query}&rdquo;. Try a different word or clear the search.
+            No templates match your filters. Try clearing search, languages, or category.
           </div>
         ) : (
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">

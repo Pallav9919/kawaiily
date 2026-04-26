@@ -14,6 +14,7 @@ import { useToast } from "../components/Toast";
 export default function Editor() {
   const route = typeof window !== "undefined" ? parseCategoryRoute(window.location.pathname) : null;
   const [category, setCategory] = useState(route?.category || "all");
+  const [languages, setLanguages] = useState([]); // empty = all
   const [query, setQuery] = useState("");
   const [draft, setDraft] = useDraft({
     templateId: TEMPLATES[0].id,
@@ -40,6 +41,7 @@ export default function Editor() {
     const q = query.trim().toLowerCase();
     return TEMPLATES.filter((t) => {
       if (category !== "all" && t.category !== category) return false;
+      if (languages.length > 0 && !languages.includes(t.lang)) return false;
       if (!q) return true;
       return (
         t.name.toLowerCase().includes(q) ||
@@ -47,7 +49,7 @@ export default function Editor() {
         t.category.toLowerCase().includes(q)
       );
     });
-  }, [category, query]);
+  }, [category, languages, query]);
 
   const canGenerate = message.trim().length > 0;
 
@@ -148,6 +150,8 @@ export default function Editor() {
           templates={filtered}
           category={category}
           onCategoryChange={setCategory}
+          languages={languages}
+          onLanguagesChange={setLanguages}
           query={query}
           onQueryChange={setQuery}
           selectedId={templateId}
