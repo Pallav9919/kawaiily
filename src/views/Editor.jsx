@@ -6,6 +6,7 @@ import { getDecoration } from "../components/decorations";
 import { CATEGORIES } from "../lib/categories";
 import { buildShareUrl } from "../lib/hash";
 import { useDraft } from "../lib/useDraft";
+import { pickPlaceholder } from "../lib/placeholders";
 import LivePreview from "../components/LivePreview";
 
 export default function Editor() {
@@ -28,6 +29,7 @@ export default function Editor() {
   const formRef = useRef(null);
   const messageRef = useRef(null);
   const [highlighted, setHighlighted] = useState(false);
+  const [placeholder] = useState(pickPlaceholder);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -192,7 +194,7 @@ export default function Editor() {
               onChange={(e) => setMessage(e.target.value)}
               rows={5}
               maxLength={1500}
-              placeholder="Write something from the heart…"
+              placeholder={placeholder}
               className="w-full resize-none rounded-lg border border-slate-300 px-3 py-2 text-base text-slate-800 outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-200"
             />
             <div className="mt-1 flex justify-between text-xs text-slate-400">
