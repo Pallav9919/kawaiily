@@ -27,6 +27,7 @@ export default function Editor() {
   const setMessage = (message) => setDraft((d) => ({ ...d, message }));
 
   const [url, setUrl] = useState("");
+  const [urlStale, setUrlStale] = useState(false);
   const [copied, setCopied] = useState(false);
   const formRef = useRef(null);
   const messageRef = useRef(null);
@@ -50,9 +51,9 @@ export default function Editor() {
   const canGenerate = message.trim().length > 0;
 
   useEffect(() => {
-    setUrl("");
+    if (url) setUrlStale(true);
     setCopied(false);
-  }, [templateId, from, to, message]);
+  }, [templateId, from, to, message]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // If user switches category and current template is no longer visible, pick the first visible one.
   useEffect(() => {
@@ -75,8 +76,9 @@ export default function Editor() {
 
   const generate = () => {
     setUrl(buildShareUrl({ t: templateId, f: from, to, m: message }));
+    setUrlStale(false);
     setCopied(false);
-    toast("Link generated ✨");
+    toast(urlStale ? "Regenerated with new template ✨" : "Link generated ✨");
   };
 
   const copy = async () => {
@@ -241,9 +243,9 @@ export default function Editor() {
               onClick={generate}
               className="rounded-lg bg-rose-500 px-5 py-2.5 font-semibold text-white shadow hover:bg-rose-600 disabled:cursor-not-allowed disabled:bg-slate-300"
             >
-              Generate link
+              {url && urlStale ? "Regenerate link" : url ? "Link ready" : "Generate link"}
             </button>
-            {url && (
+            {url && !urlStale && (
               <>
                 <button
                   onClick={share}
@@ -269,8 +271,19 @@ export default function Editor() {
             )}
           </div>
           {url && (
-            <div className="mt-3 break-all rounded-lg bg-slate-50 p-3 text-xs text-slate-500">
+            <div
+              className={`mt-3 break-all rounded-lg p-3 text-xs ${
+                urlStale
+                  ? "bg-amber-50 text-amber-700 line-through"
+                  : "bg-slate-50 text-slate-500"
+              }`}
+            >
               {url}
+              {urlStale && (
+                <div className="mt-1 text-[10px] font-medium not-italic no-underline">
+                  Your edits aren't in this link yet — regenerate to update.
+                </div>
+              )}
             </div>
           )}
         </section>
