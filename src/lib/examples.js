@@ -371,12 +371,70 @@ const EXAMPLES = {
   },
 };
 
-// Per-template example pools (more specific than category). Keyed by template id.
-// When a template has an entry here, it overrides the category pool.
-// Each entry has language-specific arrays; EN is a safe fallback.
-const TEMPLATE_EXAMPLES = {
-  // ============ Valentine's Week (per-day) ============
-  "vw-rose-day": {
+// Occasion detection — when a template belongs to a specific occasion, pick from
+// occasion-specific examples. Checked in order; first match wins.
+// This is more scalable than listing every template ID because we have 280 templates.
+const OCCASION_RULES = [
+  // Valentine's week days (EN id prefix: vw-* ; language: *-vw-*)
+  { match: /(^vw-rose-day$|-vw-rose$)/, key: "rose-day" },
+  { match: /(^vw-propose-day$|-vw-propose$)/, key: "propose-day" },
+  { match: /(^vw-chocolate-day$|-vw-chocolate$)/, key: "chocolate-day" },
+  { match: /(^vw-teddy-day$|-vw-teddy$)/, key: "teddy-day" },
+  { match: /(^vw-promise-day$|-vw-promise$)/, key: "promise-day" },
+  { match: /(^vw-hug-day$|-vw-hug$)/, key: "hug-day" },
+  { match: /(^vw-kiss-day$|-vw-kiss$)/, key: "kiss-day" },
+  { match: /(^vw-valentines$|-vw-valentine$)/, key: "valentines" },
+
+  // Festivals
+  { match: /(diwali|deepavali|dipawali|deepawali)/i, key: "diwali" },
+  { match: /(holi)/i, key: "holi" },
+  { match: /(eid)/i, key: "eid" },
+  { match: /(rakhi|raksha-bandhan|rakhi$|rakhi-)/i, key: "rakhi" },
+  { match: /(ganesh|ganpati|ganapati|chaturthi)/i, key: "ganesh" },
+  { match: /(navratri)/i, key: "navratri" },
+  { match: /(janmashtami|krishna)/i, key: "janmashtami" },
+  { match: /(karwa-chauth|karva-chauth)/i, key: "karwa-chauth" },
+  { match: /(bhai-dooj)/i, key: "bhai-dooj" },
+  { match: /(christmas)/i, key: "christmas" },
+  { match: /(new-year|nye|bestu-varas)/i, key: "new-year" },
+  { match: /(pongal|puthandu)/i, key: "pongal" },
+  { match: /(ugadi)/i, key: "ugadi" },
+  { match: /(dasara|dussehra|vijayadashami|bijoya)/i, key: "dasara" },
+  { match: /(sankranti|uttarayan)/i, key: "sankranti" },
+  { match: /(lohri)/i, key: "lohri" },
+  { match: /(vaisakhi|baisakhi)/i, key: "vaisakhi" },
+  { match: /(gurpurab|guru-nanak)/i, key: "gurpurab" },
+  { match: /(durga-puja)/i, key: "durga-puja" },
+  { match: /(pohela-boishakh|poila-boishakh)/i, key: "pohela-boishakh" },
+  { match: /(saraswati)/i, key: "saraswati" },
+  { match: /(kali)/i, key: "kali-puja" },
+  { match: /(gudi-padwa)/i, key: "gudi-padwa" },
+  { match: /(onam)/i, key: "onam" },
+
+  // Everyday variants
+  { match: /(good-morning|suprabhat|shubh-savar|shubh-sakal|shubh-saver|shubh-shokal|shubhodayam|shubhodaya|kalai-vanakkam)/i, key: "good-morning" },
+  { match: /(good-night|shubh-ratri|shubha-ratri|iniya-iravu)/i, key: "good-night" },
+  { match: /(sweet-dreams|meethe-sapne)/i, key: "sweet-dreams" },
+  { match: /(nice-day)/i, key: "nice-day" },
+  { match: /(get-well|jaldi-theek|bare-vha|sara-thao|sukham|gunamukhar|kolukondi)/i, key: "get-well" },
+  { match: /(congrats|abhinandan|abhinandane|abhinandanalu|badhai|obhinondon|vadhaaiyan|vazhthukkal$|everyday-vazhthukkal)/i, key: "congrats" },
+
+  // Love
+  { match: /anniversary/i, key: "anniversary" },
+];
+
+const detectOccasion = (templateId) => {
+  if (!templateId) return null;
+  for (const rule of OCCASION_RULES) {
+    if (rule.match.test(templateId)) return rule.key;
+  }
+  return null;
+};
+
+// Occasion-specific example pools. Fall back to category pool if occasion not here.
+const OCCASION_EXAMPLES = {
+  // ---------- Valentine's Week days ----------
+  "rose-day": {
     en: [
       "Roses remind me of you — their softness, their warmth, the way they light up a room. Happy Rose Day 🌹",
       "A rose is just a rose. With you, it means forever. Happy Rose Day!",
@@ -386,17 +444,12 @@ const TEMPLATE_EXAMPLES = {
       "गुलाब की तरह ही तुम हो — कोमल, ख़ुशबूदार और मेरे दिल के करीब। रोज़ डे मुबारक! 🌹",
       "एक गुलाब, एक वादा — आज और हमेशा के लिए।",
     ],
+    mr: [
+      "गुलाबाच्या पाकळ्यांइतकंच कोमल आहे तुझ्यासाठीचं माझं प्रेम. हॅपी रोझ डे! 🌹",
+      "हा गुलाब आणि तुझं हसू — दोन्ही माझ्या दिवसाची सुरुवात करतात.",
+    ],
   },
-  "mr-vw-rose": { mr: [
-    "गुलाबाच्या पाकळ्यांइतकंच कोमल आहे तुझ्यासाठीचं माझं प्रेम. हॅपी रोझ डे! 🌹",
-    "हा गुलाब आणि तुझं हसू — दोन्ही माझ्या दिवसाची सुरुवात करतात. हॅपी रोझ डे!",
-  ]},
-  "hi-vw-rose": { hi: [
-    "गुलाब की तरह ही तुम हो — कोमल, ख़ुशबूदार और मेरे दिल के करीब। रोज़ डे मुबारक! 🌹",
-    "एक गुलाब, एक वादा — आज और हमेशा के लिए।",
-  ]},
-
-  "vw-propose-day": {
+  "propose-day": {
     en: [
       "I've been meaning to say this for a while. Will you be mine — today, tomorrow, and every day after? 💍",
       "No grand speech, no perfect words. Just one question: will you?",
@@ -406,147 +459,347 @@ const TEMPLATE_EXAMPLES = {
       "आज वो सवाल पूछना है जो हर दिन दिल में आता है — क्या तुम मेरी/मेरे बनोगी/बनोगे? 💍",
       "कोई बड़ा डायलॉग नहीं, बस एक सच्चा सवाल है। साथ दोगे/दोगी?",
     ],
+    mr: ["तू माझी/माझा होशील का? आजही तोच प्रश्न. 💍"],
   },
-  "mr-vw-propose": { mr: [
-    "आज एक प्रश्न विचारायचा आहे — तू माझी/माझा होशील का? 💍",
-    "शब्दांत सांगता येत नाही, पण दिलात आहेस तू. साथ देशील?",
-  ]},
-
-  "vw-chocolate-day": {
+  "chocolate-day": {
     en: [
       "If I had to pick between chocolate and you, I'd pick you. (Chocolate would be a very close second.) 🍫",
       "Some things sweeten the day. Chocolate is one. You are every.",
       "Happy Chocolate Day. Proof that the best things in life are sweet, and shared.",
     ],
-    hi: [
-      "चॉकलेट मीठी है, पर तुम उससे भी मीठे/मीठी हो। हैप्पी चॉकलेट डे! 🍫",
-      "आज का दिन मीठा हो जाएगा अगर तुम साथ हो।",
-    ],
+    hi: ["चॉकलेट मीठी है, पर तुम उससे भी मीठे/मीठी हो। हैप्पी चॉकलेट डे! 🍫"],
+    mr: ["चॉकलेटहून गोड आहेस तू. हॅपी चॉकलेट डे! 🍫"],
   },
-  "mr-vw-chocolate": { mr: [
-    "चॉकलेटहून गोड आहेस तू. हॅपी चॉकलेट डे! 🍫",
-    "आज थोडा गोडवा — चॉकलेट आणि तुझ्यासोबत.",
-  ]},
-
-  "vw-teddy-day": {
+  "teddy-day": {
     en: [
       "This card is a hug in disguise. And a teddy too. Happy Teddy Day 🧸",
       "Every teddy I see reminds me of warm things. Like you.",
       "A soft one, a cuddly one, a just-like-you one. Happy Teddy Day!",
     ],
-    hi: [
-      "ये टेडी नहीं है, ये एक प्यारी झप्पी है तुम्हारे लिए। हैप्पी टेडी डे! 🧸",
-      "दिन में हो या रात में — एक टेडी और तुम, बस यही चाहिए।",
-    ],
+    hi: ["ये टेडी नहीं, एक गर्म सी झप्पी है तुम्हारे लिए। हैप्पी टेडी डे! 🧸"],
   },
-
-  "vw-promise-day": {
+  "promise-day": {
     en: [
       "One promise today: I'll keep choosing you, quietly and daily. Happy Promise Day 🤞",
       "Not the big promises, the small ones — the 'I'll listen', 'I'll be there' kind. Those are yours.",
     ],
-    hi: [
-      "एक वादा — हर छोटी बात में तुम्हारा साथ दूँगा/दूँगी। प्रॉमिस डे मुबारक 🤞",
-    ],
+    hi: ["एक वादा — हर छोटी बात में तुम्हारा साथ दूँगा/दूँगी। प्रॉमिस डे मुबारक 🤞"],
   },
-
-  "vw-hug-day": {
+  "hug-day": {
     en: [
       "Consider yourself hugged. Tightly. For as long as you need. 🤗",
       "The best hugs don't need words. This card is the word version of one.",
       "Sending you an extra-long hug today. Keep it, it's yours. Happy Hug Day!",
     ],
-    hi: [
-      "एक कस के गले लगना तुम्हारे नाम। हग डे मुबारक! 🤗",
-      "आज दूर हूँ तो ये झप्पी भेज रहा/रही हूँ — बहुत ज़रूरी थी।",
-    ],
+    hi: ["एक कस के गले लगना तुम्हारे नाम। हग डे मुबारक! 🤗"],
+    mr: ["एक घट्ट मिठी तुझ्यासाठी. कुठेही असलास तरी पोहोचेल. 🤗"],
   },
-  "mr-vw-hug": { mr: [
-    "एक घट्ट मिठी तुझ्यासाठी. कुठेही असलास तरी पोहोचेल. 🤗",
-    "शब्दांना जमत नाही ते मिठी बोलते. आज तुझ्यासाठी.",
-  ]},
-
-  "vw-kiss-day": {
+  "kiss-day": {
     en: [
       "A small thing, a big feeling. Happy Kiss Day 💋",
       "Some moments are worth a thousand cards. This one is for one of those.",
     ],
-    hi: [
-      "एक छोटा सा पल, पर बहुत बड़ी फीलिंग। किस डे मुबारक! 💋",
-    ],
+    hi: ["एक छोटा सा पल, पर बहुत बड़ी फीलिंग। किस डे मुबारक! 💋"],
   },
-
-  "vw-valentines": {
+  "valentines": {
     en: [
       "Happy Valentine's Day. I'd write a long poem but you already know all of it. ❤️",
       "You're my favourite person. Today and every day. Be my Valentine?",
       "Loving you is the easiest thing I do. Happy Valentine's Day.",
     ],
+    hi: ["हैप्पी वैलेंटाइन्स डे! तुम मेरी सबसे प्यारी वजह हो, हर दिन।"],
+    mr: ["व्हॅलेंटाइनच्या खूप खूप शुभेच्छा! तू माझं खास कारण आहेस."],
+  },
+
+  // ---------- Festivals ----------
+  "diwali": {
+    en: [
+      "May this Diwali light up every corner of your life — quiet joy, loud laughter, and warm company. 🪔",
+      "Wishing you a Diwali full of lamps, sweets, and good company. Happy Deepavali!",
+      "May the light of diyas bring brightness to your world. Shubh Deepavali!",
+    ],
     hi: [
-      "हैप्पी वैलेंटाइन्स डे! तुम मेरी सबसे प्यारी वजह हो, हर दिन।",
-      "आज का दिन तुम्हारे नाम। वैलेंटाइन बनोगी/बनोगे?",
+      "दीपावली की हार्दिक शुभकामनाएँ! आपके जीवन में खुशियों के दीप जलें। 🪔",
+      "हर दीया खुशी का, हर रोशनी प्यार की — शुभ दीपावली!",
+    ],
+    mr: [
+      "दिवाळीच्या प्रकाशाप्रमाणे तुझं आयुष्य उजळून निघो. शुभ दीपावली! 🪔",
+      "दिवाळीच्या हार्दिक शुभेच्छा! गोडवा, आनंद आणि समृद्धी घरी नांदो.",
+    ],
+    bn: ["দীপাবলির আলোয় উজ্জ্বল হোক তোমার জীবন।"],
+    ta: ["தீபாவளி வெளிச்சம் போல உங்கள் வாழ்க்கை பிரகாசிக்கட்டும்."],
+    te: ["దీపావళి వెలుగుల్లా నీ జీవితం కూడా ప్రకాశించాలి."],
+    kn: ["ದೀಪಾವಳಿ ಬೆಳಕಿನಂತೆ ನಿಮ್ಮ ಜೀವನ ಪ್ರಕಾಶಿಸಲಿ."],
+    gu: ["દીપાવલીના દીવાની જેમ તારું જીવન પણ ઉજળું રહે."],
+    pa: ["ਦੀਵਾਲੀ ਦੇ ਦੀਵੇ ਤੇਰੀ ਜ਼ਿੰਦਗੀ ਨੂੰ ਰੌਸ਼ਨ ਕਰਨ।"],
+  },
+  "holi": {
+    en: [
+      "May your Holi be full of color, laughter, and a little mischief. Happy Holi! 🎨",
+      "Bura na mano, Holi hai! Wishing you a bright, joyful Holi.",
+      "Sending you every color of happiness this Holi.",
+    ],
+    hi: [
+      "होली के रंगों की तरह ख़ुशियाँ तुम्हारे जीवन में छाई रहें। होली मुबारक! 🎨",
+      "बुरा ना मानो, होली है! रंगो-बिरंगी शुभकामनाएँ।",
+    ],
+    mr: ["होळीच्या रंगांप्रमाणे तुझं आयुष्य रंगीबेरंगी राहो!"],
+    gu: ["હોળીના રંગોની જેમ તારું જીવન પણ રંગીન રહે. હેપી હોળી!"],
+    pa: ["ਰੰਗਾਂ ਦੀ ਹੋਲੀ ਤੁਹਾਡੀ ਜ਼ਿੰਦਗੀ ਵਿੱਚ ਖੁਸ਼ੀਆਂ ਲਿਆਵੇ।"],
+  },
+  "eid": {
+    en: [
+      "Eid Mubarak! May this day bring blessings, togetherness, and all the sweetness of seviyan. 🌙",
+      "Wishing you a joyous Eid full of peace, love, and laughter.",
+    ],
+    hi: ["ईद मुबारक! अल्लाह आपको खूब खुशियाँ दें। 🌙"],
+    mr: ["ईद मुबारक! तुमच्या घरात सुख-शांती नांदो."],
+    bn: ["ঈদ মুবারক! আল্লাহ তোমাকে অনেক খুশি দিন।"],
+    ta: ["ஈத் முபாரக்! இந்த நாள் உங்களுக்கு எல்லா நல்லதும் கொண்டு வரட்டும்."],
+    te: ["ఈద్ ముబారక్! ఈ రోజు మీకు ఎంతో ఆనందాన్ని తీసుకురావాలి."],
+    kn: ["ಈದ್ ಮುಬಾರಕ್! ಈ ದಿನ ನಿಮಗೆ ಒಳ್ಳೆಯದನ್ನು ತರಲಿ."],
+    gu: ["ઈદ મુબારક! આ દિવસ તમારા માટે આશીર્વાદ લઈને આવે."],
+    pa: ["ਈਦ ਮੁਬਾਰਕ! ਤੁਹਾਨੂੰ ਅਤੇ ਤੁਹਾਡੇ ਪਰਿਵਾਰ ਨੂੰ ਬਹੁਤ ਸਾਰੀਆਂ ਖੁਸ਼ੀਆਂ।"],
+  },
+  "rakhi": {
+    en: [
+      "Happy Raksha Bandhan, bhai/didi! This thread is just a symbol — what we have is unbreakable. 🪢",
+      "To the one who's been there forever — Happy Rakhi. ❤️",
+      "No matter how far, the Rakhi bond stays. Happy Raksha Bandhan!",
+    ],
+    hi: [
+      "रक्षा बंधन मुबारक! ये धागा तो सिर्फ एक निशानी है — रिश्ता तो हमेशा का है। 🪢",
+      "भाई/बहन, तुम हो तो सब है। हैप्पी रक्षा बंधन!",
+    ],
+    mr: ["रक्षाबंधनाच्या हार्दिक शुभेच्छा! आपलं नातं कायम घट्ट राहो."],
+    gu: ["રક્ષા બંધનની શુભેચ્છાઓ! આપણો સંબંધ કાયમ મજબૂત રહે."],
+    pa: ["ਰੱਖੜੀ ਦੀਆਂ ਮੁਬਾਰਕਾਂ! ਆਪਣਾ ਰਿਸ਼ਤਾ ਇੰਝ ਹੀ ਕਾਇਮ ਰਹੇ।"],
+  },
+  "ganesh": {
+    en: [
+      "Ganpati Bappa Morya! May Ganesha remove every obstacle from your path. 🕉️",
+      "Wishing you and your family a blessed Ganesh Chaturthi. May Bappa bring joy and wisdom. 🪷",
+    ],
+    hi: [
+      "गणपति बाप्पा मोरया! बाप्पा आपके जीवन से सभी विघ्न दूर करें। 🕉️",
+      "गणेश चतुर्थी की हार्दिक शुभकामनाएँ! बाप्पा के आशीर्वाद से सब ठीक हो।",
+    ],
+    mr: [
+      "गणपती बाप्पा मोरया! बाप्पाच्या आशीर्वादाने सगळं चांगलं होवो. 🕉️",
+      "गणेश चतुर्थीच्या हार्दिक शुभेच्छा! बाप्पा आनंद आणि बुद्धी देवो.",
+    ],
+    gu: ["ગણેશ ચતુર્થી ની શુભેચ્છાઓ! બાપ્પા તમને આશીર્વાદ આપે."],
+    kn: ["ಗಣೇಶ ಚತುರ್ಥಿ ಶುಭಾಶಯಗಳು! ಗಣೇಶ ನಿಮಗೆ ಎಲ್ಲ ಒಳ್ಳೆಯದನ್ನು ಕೊಡಲಿ."],
+  },
+  "navratri": {
+    en: [
+      "Happy Navratri! Nine nights of music, devotion, and maa's blessings. 🪷",
+      "May Maa Durga bless you with strength and joy this Navratri.",
+    ],
+    hi: ["नवरात्रि की हार्दिक शुभकामनाएँ! माँ दुर्गा का आशीर्वाद आप पर बना रहे। 🪷"],
+    gu: ["નવરાત્રીની હાર્દિક શુભેચ્છાઓ! મા અંબા તને આશીર્વાદ આપે."],
+    ta: ["நவராத்திரி வாழ்த்துக்கள்! அம்மன் உங்களை ஆசீர்வதிக்கட்டும்."],
+  },
+  "janmashtami": {
+    en: ["Jai Shri Krishna! May the flute player's melody fill your life with joy. 🦚"],
+    hi: [
+      "जय श्री कृष्ण! जन्माष्टमी की हार्दिक शुभकामनाएँ। 🦚",
+      "कान्हा के आशीर्वाद से आपका जीवन मिठास और प्रेम से भरा रहे।",
+    ],
+    gu: ["જય શ્રી કૃષ્ણ! જન્માષ્ટમી ની હાર્દિક શુભેચ્છાઓ."],
+  },
+  "karwa-chauth": {
+    en: ["May your love grow stronger with every moon that rises. Happy Karwa Chauth 🌕"],
+    hi: [
+      "करवा चौथ मुबारक! आप दोनों का रिश्ता चाँद से भी रोशन रहे। 🌕",
+      "चाँद और छलनी के बीच का ये रिश्ता हमेशा कायम रहे।",
+    ],
+  },
+  "bhai-dooj": {
+    en: ["Happy Bhai Dooj! A day for the brother-sister bond that no distance can dim. 🪔"],
+    hi: ["भाई दूज मुबारक! तिलक, मिठाई और तुम्हारे प्यार की दुआ। 🪔"],
+  },
+  "christmas": {
+    en: [
+      "Merry Christmas! May your tree be bright, your cookies plenty, and your heart warm. 🎄",
+      "Wishing you a cozy Christmas full of love and laughter.",
+    ],
+    hi: ["क्रिसमस मुबारक! ये त्योहार आपके जीवन में खुशियाँ लाए। 🎄"],
+    bn: ["শুভ বড়দিন! তোমার জীবনে আনন্দ ভরে উঠুক।"],
+    ta: ["கிறிஸ்துமஸ் வாழ்த்துக்கள்! சாந்தியும் மகிழ்ச்சியும் நிறையட்டும்."],
+  },
+  "new-year": {
+    en: [
+      "Happy New Year! Here's to fewer worries, softer mornings, and more of what makes you glow. 🎆",
+      "Cheers to a new year, new hopes, and the same people who matter most.",
+    ],
+    hi: [
+      "नए साल की हार्दिक शुभकामनाएँ! ये साल आपके लिए बहुत ख़ास हो। 🎆",
+      "नया साल, नई उम्मीदें, और वही पुराने अपने।",
+    ],
+    mr: ["नववर्षाच्या हार्दिक शुभेच्छा! नवीन वर्ष तुझ्यासाठी सुखाचं जावो."],
+    gu: ["સાલ મુબારક! નવું વર્ષ તને ખુશીઓ અને સફળતા આપે."],
+    pa: ["ਨਵੇਂ ਸਾਲ ਦੀਆਂ ਮੁਬਾਰਕਾਂ! ਇਹ ਸਾਲ ਤੁਹਾਡੇ ਲਈ ਸ਼ਾਨਦਾਰ ਹੋਵੇ।"],
+    bn: ["শুভ নববর্ষ! নতুন বছর তোমায় অনেক আনন্দ দিক।"],
+    ta: ["புத்தாண்டு வாழ்த்துக்கள்! புதிய வருடம் உங்களுக்கு நல்லது மட்டுமே கொடுக்கட்டும்."],
+    te: ["నూతన సంవత్సర శుభాకాంక్షలు! ఈ ఏడాది మీకు ఆనందం కలిగించాలి."],
+    kn: ["ನೂತನ ವರ್ಷದ ಶುಭಾಶಯಗಳು! ಈ ವರ್ಷ ನಿಮಗೆ ಸಂತೋಷ ತರಲಿ."],
+  },
+  "pongal": {
+    en: [
+      "Happy Pongal! May the harvest of this year be rich and your home full. 🌾",
+      "Thai pirandhal vazhi pirakkum — new month, new path. Happy Pongal!",
+    ],
+    ta: [
+      "இனிய பொங்கல் நல்வாழ்த்துக்கள்! இந்த ஆண்டு உங்களுக்கு மகிழ்ச்சியும் வளமும் நிறைய வரட்டும். 🌾",
+      "தமிழர் திருநாள் வாழ்த்துக்கள்! புதிய மாதம், புதிய வழி.",
+    ],
+  },
+  "ugadi": {
+    en: [
+      "Happy Ugadi! A new year to try new things, meet new people, and be kinder to yourself. 🪷",
+      "May this Ugadi bring the six flavors of life — sweet, sour, salty, bitter, spicy, and astringent — in just the right mix.",
+    ],
+    te: [
+      "ఉగాది శుభాకాంక్షలు! ఈ నూతన సంవత్సరం నీకు ఆనందం, విజయం, ఆరోగ్యం ఇవ్వాలి. 🪷",
+      "ఉగాది పచ్చడిలా — జీవితంలో అన్ని రుచులు సరైన మోతాదులో ఉండాలి.",
+    ],
+    kn: [
+      "ಯುಗಾದಿ ಶುಭಾಶಯಗಳು! ಈ ಹೊಸ ವರ್ಷ ನಿಮಗೆ ಸುಖ, ಸಮೃದ್ಧಿ ತರಲಿ. 🪷",
+      "ಯುಗಾದಿ ಬೇವು-ಬೆಲ್ಲದಂತೆ ನಿಮ್ಮ ಬದುಕಿನಲ್ಲಿ ಎಲ್ಲ ರುಚಿಗಳು ಸರಿಯಾದ ಪ್ರಮಾಣದಲ್ಲಿ ಇರಲಿ.",
+    ],
+  },
+  "dasara": {
+    en: ["Happy Dasara/Vijayadashami! May goodness win, always. 🌺"],
+    hi: ["दशहरा मुबारक! बुराई पर अच्छाई की जीत का ये त्योहार आपको खुशियाँ दे। 🌺"],
+    te: ["దసరా శుభాకాంక్షలు! మంచి ఎప్పుడూ గెలవాలి."],
+    kn: ["ದಸರಾ ಶುಭಾಶಯಗಳು! ಒಳ್ಳೆಯದು ಕೆಟ್ಟದಿನ ಮೇಲೆ ಗೆಲ್ಲಲಿ."],
+    bn: ["শুভ বিজয়া! আসছে বছর আবার হবে।"],
+  },
+  "sankranti": {
+    en: [
+      "Happy Sankranti/Uttarayan! May your kites fly high and your days feel light. 🪁",
+      "Wishing you a colorful, wind-filled, sweet Sankranti!",
+    ],
+    hi: ["मकर संक्रांति मुबारक! तुम्हारी पतंग आकाश छुए और दिन मीठे हों। 🪁"],
+    gu: ["શુભ ઉત્તરાયણ! તારું જીવન પણ આકાશમાં ઊડતી પતંગ જેવું ઊંચું જાય."],
+    te: ["సంక్రాంతి శుభాకాంక్షలు! కొత్త పంట, కొత్త ఆశలు."],
+    kn: ["ಸಂಕ್ರಾಂತಿ ಶುಭಾಶಯಗಳು! ಹೊಸ ಬೆಳೆ, ಹೊಸ ಆಶಯಗಳು."],
+  },
+  "lohri": {
+    en: ["Happy Lohri! May the fire burn away the old and bring in the warm. 🔥"],
+    pa: [
+      "ਲੋਹੜੀ ਦੀਆਂ ਦਿਲੀ ਮੁਬਾਰਕਾਂ! ਇਹ ਅੱਗ ਸਾਰੀਆਂ ਮੁਸ਼ਕਲਾਂ ਸਾੜ ਦੇਵੇ। 🔥",
+      "ਰੇਵੜੀ, ਗੱਜਕ ਅਤੇ ਨਵੀਂ ਖੁਸ਼ੀਆਂ — ਹੈਪੀ ਲੋਹੜੀ!",
+    ],
+  },
+  "vaisakhi": {
+    en: ["Happy Vaisakhi! New harvest, new hopes, new blessings. 🌾"],
+    pa: [
+      "ਵਿਸਾਖੀ ਦੀਆਂ ਮੁਬਾਰਕਾਂ! ਨਵੀਂ ਫਸਲ, ਨਵੀਆਂ ਖੁਸ਼ੀਆਂ।",
+      "ਵਾਹਿਗੁਰੂ ਦੀਆਂ ਮਿਹਰਾਂ ਤੁਹਾਡੇ ਉੱਤੇ ਬਣੀਆਂ ਰਹਿਣ।",
+    ],
+  },
+  "gurpurab": {
+    en: ["Happy Gurpurab! Waheguru's blessings upon you and your family. 🪔"],
+    pa: [
+      "ਗੁਰਪੁਰਬ ਦੀਆਂ ਲੱਖ ਲੱਖ ਵਧਾਈਆਂ! ਵਾਹਿਗੁਰੂ ਦੀਆਂ ਮਿਹਰਾਂ ਹੋਣ।",
+      "ਬਾਬੇ ਨਾਨਕ ਦੀ ਕਿਰਪਾ ਤੁਹਾਡੇ ਘਰ ਉੱਤੇ ਸਦਾ ਬਣੀ ਰਹੇ।",
+    ],
+  },
+  "durga-puja": {
+    en: ["Shubho Durga Puja! May Maa's blessings be with you and your family. 🪷"],
+    bn: [
+      "শুভ দুর্গা পূজা! মা দুর্গা তোমায় ও তোমার পরিবারকে আশীর্বাদ দিন। 🪷",
+      "পুজোর আনন্দে ভরে উঠুক তোমার প্রতিটা দিন।",
+    ],
+  },
+  "pohela-boishakh": {
+    en: ["Shubho Noboborsho! A new Bengali year, a new beginning."],
+    bn: [
+      "শুভ নববর্ষ! নতুন বছর তোমায় নতুন আশা নিয়ে আসুক।",
+      "পুরনো সব ভুলে, নতুনের আনন্দে ডুবে যাও।",
+    ],
+  },
+  "saraswati": {
+    en: ["Sarowsati Puja-r shubhechha! May knowledge and music fill your days. 🪷"],
+    bn: ["সরস্বতী পূজার শুভেচ্ছা! মা সরস্বতী তোমায় বিদ্যা ও আশীর্বাদ দিন। 🪷"],
+  },
+  "kali-puja": {
+    en: ["Shubho Kali Puja! May Maa's blessings protect and guide you. 🪔"],
+    bn: ["শুভ কালী পূজা! মা কালী তোমায় রক্ষা করুন।"],
+  },
+  "gudi-padwa": {
+    en: ["Shubh Gudi Padwa! Marathi New Year — may it be your best one yet. 🌸"],
+    mr: [
+      "गुढीपाडव्याच्या हार्दिक शुभेच्छा! नवीन वर्ष तुम्हाला सुख, समृद्धी आणि आरोग्य देवो. 🌸",
+      "नव्या वर्षात नव्या संधी, नवीन स्वप्नं आणि भरभराट येवो!",
+    ],
+  },
+  "onam": {
+    en: [
+      "Happy Onam! May Maveli's visit bring joy, peace, and pookalam to your home. 🌼",
+      "Wishing you a grand Onam — full of sadhya, laughter, and togetherness.",
     ],
   },
 
-  // ============ Everyday (per-variant) ============
-  "everyday-good-morning": {
+  // ---------- Everyday variants ----------
+  "good-morning": {
     en: [
       "Good morning! Hope your coffee is hot and your day is kinder than yesterday. ☀️",
       "A little sunshine note to start your day. You've got this.",
       "Good morning, you. Sending you a soft landing into today.",
     ],
     hi: [
-      "सुप्रभात! आज का दिन तुम्हारे लिए बहुत शुभ हो। ☀️",
-      "नमस्ते और एक बड़ी स्माइल तुम्हारे दिन की शुरुआत के लिए।",
+      "सुप्रभात! आज का दिन मुस्कुराहटों से भरा रहे। ☀️",
+      "सूरज की पहली किरण के साथ एक छोटी सी शुभकामना — तुम्हारा दिन बेहतरीन हो।",
     ],
+    mr: [
+      "शुभ सकाळ! आजचा दिवस तुझ्यासारखाच तेजस्वी होवो. ☀️",
+      "सकाळच्या पहिल्या किरणासारखी एक चांगली बातमी — तू आज माझ्या विचारात आहेस.",
+    ],
+    bn: ["শুভ সকাল! তোমার দিনটা যেন তোমার মতোই সুন্দর হয়। ☀️"],
+    gu: ["શુભ સવાર! તારો દિવસ તારી જેમ જ સુંદર જાય. ☀️"],
+    pa: ["ਸ਼ੁਭ ਸਵੇਰ! ਤੁਹਾਡਾ ਦਿਨ ਸ਼ਾਨਦਾਰ ਹੋਵੇ।"],
+    ta: ["காலை வணக்கம்! உங்கள் நாள் மிகச் சிறப்பாக இருக்கட்டும். ☀️"],
+    te: ["శుభోదయం! నీ రోజు నీలాగే అందంగా గడవాలి. ☀️"],
+    kn: ["ಶುಭೋದಯ! ನಿಮ್ಮ ದಿನ ಸುಂದರವಾಗಿ ಕಳೆಯಲಿ. ☀️"],
   },
-  "mr-everyday-shubh-sakal": { mr: [
-    "शुभ सकाळ! आजचा दिवस तुझ्यासारखाच तेजस्वी होवो. ☀️",
-    "सकाळच्या पहिल्या किरणासारखी एक चांगली बातमी — तू आज माझ्या विचारात आहेस.",
-  ]},
-  "hi-everyday-suprabhat": { hi: [
-    "सुप्रभात! आज का दिन मुस्कुराहटों से भरा रहे। ☀️",
-    "सूरज की पहली किरण के साथ एक छोटी सी शुभकामना — तुम्हारा दिन बेहतरीन हो।",
-  ]},
-
-  "everyday-good-night": {
+  "good-night": {
     en: [
       "Sleep well. The day was long, but it was yours. See you in the morning. 🌙",
       "Close your eyes, let the day go. Tomorrow is a softer place.",
       "Good night. Wherever you are, may your dreams be kind.",
     ],
     hi: [
-      "शुभ रात्रि! आज का दिन बीत गया, कल एक नया शुरू होगा। सपने अच्छे हों। 🌙",
-      "आँखें बंद करो, चैन की साँस लो। कल और बेहतर होगा।",
+      "शुभ रात्रि! दिन भर की थकान आज की नींद में खो जाए। 🌙",
+      "चाँद देख कर सो जाओ — कल फिर मिलेंगे।",
     ],
+    mr: [
+      "शुभ रात्री! आजचा दिवस चांगला गेला, आता गोड झोप लाग. 🌙",
+      "डोळे मिटून दिवस सोडून दे. उद्या नवं काहीतरी वाट पाहतंय.",
+    ],
+    bn: ["শুভ রাত্রি! মিষ্টি স্বপ্ন দেখো।"],
+    gu: ["શુભ રાત્રિ! મીઠા સપના આવે."],
+    pa: ["ਸ਼ੁਭ ਰਾਤਰੀ! ਮਿੱਠੇ ਸੁਪਨੇ।"],
+    ta: ["இனிய இரவு! இனிய கனவுகள் காணுங்கள்."],
+    te: ["శుభరాత్రి! మధుర స్వప్నాలు కనండి."],
+    kn: ["ಶುಭ ರಾತ್ರಿ! ಸುಂದರ ಕನಸುಗಳು."],
   },
-  "mr-everyday-shubh-ratri": { mr: [
-    "शुभ रात्री! आजचा दिवस चांगला गेला, आता गोड झोप लाग. 🌙",
-    "डोळे मिटून दिवस सोडून दे. उद्या नवं काहीतरी वाट पाहतंय.",
-  ]},
-  "hi-everyday-shubh-ratri": { hi: [
-    "शुभ रात्रि! दिन भर की थकान आज की नींद में खो जाए। 🌙",
-    "चाँद देख कर सो जाओ — कल फिर मिलेंगे।",
-  ]},
-  "hi-everyday-sweet-dreams": { hi: [
-    "मीठे सपने आएँ! सपने में मिलते हैं। ✨",
-    "तुम्हारी आँखों में आज रात सितारे तैरें।",
-  ]},
-  "everyday-sweet-dreams": {
+  "sweet-dreams": {
     en: [
       "Sweet dreams. May tonight's dreams be the cozy kind — the ones you don't want to wake up from. ✨",
       "May stars line your sleep and softness lead your morning.",
     ],
+    hi: ["मीठे सपने आएँ! सपने में मिलते हैं। ✨"],
   },
-
-  "everyday-nice-day": {
+  "nice-day": {
     en: [
       "Have a good one. No pressure, no grand plans — just a day that feels like you. 🌼",
       "Sending a little note into your day. Hope it's a gentle one.",
     ],
   },
-
-  "everyday-get-well": {
+  "get-well": {
     en: [
       "Rest up. The world will still be here when you're back. Feel better soon. 🌷",
       "Sending you soup, sunlight, and softness. Get well soon.",
@@ -556,36 +809,58 @@ const TEMPLATE_EXAMPLES = {
       "जल्दी ठीक हो जाओ। तुम्हारे बिना दिन अधूरे लगते हैं। 🌷",
       "थोड़ा आराम करो। बाकी सब बाद में।",
     ],
+    mr: ["लवकर बरा/बरी हो. आराम कर, बाकी सगळं नंतर. 🌷"],
+    bn: ["দ্রুত সুস্থ হয়ে ওঠো! তোমাকে মিস করছি।"],
+    gu: ["જલ્દી સારા થઈ જાઓ! તમને મિસ કરીએ છીએ."],
+    pa: ["ਜਲਦੀ ਠੀਕ ਹੋ ਜਾਓ! ਤੁਹਾਡੀ ਯਾਦ ਆ ਰਹੀ ਹੈ।"],
+    ta: ["சீக்கிரம் சுகமாக ஆகுங்கள்! உங்களை மிஸ் செய்கிறேன்."],
+    te: ["త్వరగా కోలుకోండి! మిమ్మల్ని మిస్ అవుతున్నాను."],
+    kn: ["ಬೇಗ ಗುಣಮುಖರಾಗಿ! ನಿಮ್ಮನ್ನು ಮಿಸ್ ಮಾಡುತ್ತಿದ್ದೇನೆ."],
   },
-  "mr-everyday-get-well": { mr: [
-    "लवकर बरा/बरी हो. आराम कर, बाकी सगळं नंतर. 🌷",
-  ]},
-  "hi-everyday-get-well": { hi: [
-    "जल्दी ठीक हो जाओ। तुम्हारा हँसना मुझे याद आ रहा है। 🌷",
-  ]},
-
-  "everyday-congrats": {
+  "congrats": {
     en: [
       "You did it! So proud of you. Wishing you many more of these moments. 🎊",
       "Hard work, quiet hours, and now — a win. Well done!",
       "Celebrate this. You earned it.",
     ],
     hi: [
-      "बधाई हो! ये तुम्हारी मेहनत का फल है। बहुत खुशी हुई। 🎊",
+      "बधाई हो! ये तुम्हारी मेहनत का फल है। 🎊",
       "कर दिखाया तुमने! आगे भी ऐसी ही जीतें मिलें।",
     ],
+    mr: ["अभिनंदन! तुझ्या मेहनतीला फळ आलं."],
+    bn: ["অভিনন্দন! তোমার পরিশ্রমের ফল।"],
+    gu: ["અભિનંદન! તારી મહેનત સફળ થઈ."],
+    pa: ["ਵਧਾਈਆਂ! ਤੁਹਾਡੀ ਮਿਹਨਤ ਰੰਗ ਲਿਆਈ।"],
+    ta: ["வாழ்த்துக்கள்! உங்கள் உழைப்புக்கான பலன்."],
+    te: ["అభినందనలు! నీ కృషికి విజయం."],
+    kn: ["ಅಭಿನಂದನೆಗಳು! ನಿಮ್ಮ ಪ್ರಯತ್ನಕ್ಕೆ ಫಲ."],
+  },
+
+  // ---------- Love ----------
+  "anniversary": {
+    en: [
+      "Happy anniversary! Another year of us — same love, a little bit wiser. 💞",
+      "Here's to the year gone by and every one to come. I'd pick you every time.",
+      "One more year together, one more year I get to call you mine.",
+    ],
+    hi: [
+      "सालगिरह मुबारक! एक और साल तुम्हारे साथ — हर दिन पहले से बेहतर। 💞",
+      "हम दोनों का ये सफ़र हमेशा ऐसे ही चलता रहे।",
+    ],
+    mr: ["लग्नाच्या वाढदिवसाच्या हार्दिक शुभेच्छा! आपला प्रवास असाच सुरू राहो. 💞"],
+    gu: ["લગ્ન જીવનના શુભ વર્ષ! આપણો સંબંધ એમ જ મજબૂત રહે."],
+    pa: ["ਸਾਲਗਿਰਾ ਮੁਬਾਰਕ! ਆਪਣਾ ਸਫ਼ਰ ਇੰਝ ਹੀ ਚੱਲਦਾ ਰਹੇ।"],
   },
 };
 
 export const getExample = (category, lang = "en", templateId) => {
-  // 1. Template-specific pool (most specific)
-  if (templateId) {
-    const tplPool = TEMPLATE_EXAMPLES[templateId];
-    if (tplPool) {
-      const tplLangPool = tplPool[lang] || tplPool.en;
-      if (tplLangPool && tplLangPool.length) {
-        return tplLangPool[Math.floor(Math.random() * tplLangPool.length)];
-      }
+  // 1. Occasion-specific pool (most specific — e.g. Diwali, Rose Day, Good Morning)
+  const occasion = detectOccasion(templateId);
+  if (occasion && OCCASION_EXAMPLES[occasion]) {
+    const pool = OCCASION_EXAMPLES[occasion];
+    const langPool = pool[lang] || pool.en;
+    if (langPool && langPool.length) {
+      return langPool[Math.floor(Math.random() * langPool.length)];
     }
   }
   // 2. Category × lang fallback
