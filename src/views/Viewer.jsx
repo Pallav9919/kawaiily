@@ -7,6 +7,7 @@ import { getReveal } from "../components/animations";
 import Burst from "../components/Burst";
 import Typewriter from "../components/Typewriter";
 import Envelope from "../components/Envelope";
+import { t } from "../lib/i18n";
 
 export default function Viewer({ data }) {
   const [opened, setOpened] = useState(false);
@@ -75,7 +76,7 @@ export default function Viewer({ data }) {
                   </h2>
                   {data.to && (
                     <p className="relative mt-2 text-center text-lg opacity-90">
-                      {tpl.lang === "hi" ? `${data.to} के लिए` : `For ${data.to}`}
+                      {t(tpl.lang).forX(data.to)}
                     </p>
                   )}
                   <p className="absolute bottom-6 text-xs uppercase tracking-widest opacity-70">
@@ -85,13 +86,7 @@ export default function Viewer({ data }) {
                 <Face back className={`${insidePal.inside} flex flex-col p-8`}>
                   <InsideDeco />
                   <div className={`relative text-sm font-semibold ${insidePal.accent}`}>
-                    {data.to
-                      ? tpl.lang === "hi"
-                        ? `प्रिय ${data.to},`
-                        : `Dear ${data.to},`
-                      : tpl.lang === "hi"
-                      ? "नमस्ते,"
-                      : "Hello,"}
+                    {data.to ? t(tpl.lang).dearX(data.to) : t(tpl.lang).hello}
                   </div>
                   <p
                     className={`kawaiily-scroll relative mt-4 flex-1 overflow-auto whitespace-pre-wrap text-lg leading-relaxed ${tpl.inside.font}`}

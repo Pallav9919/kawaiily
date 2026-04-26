@@ -20,3 +20,6 @@ body { font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
 .font-playfair { font-family: "Playfair Display", serif; }
 .font-kalam { font-family: "Kalam", cursive; }
 .font-devanagari { font-family: "Tiro Devanagari Hindi", serif; }
+.font-marathi { font-family: "Tiro Devanagari Marathi", serif; }
+.font-tamil { font-family: "Tiro Tamil", serif; }
+.font-bangla { font-family: "Tiro Bangla", serif; }
