@@ -160,6 +160,11 @@ function TemplateCard({ template, selected, onSelect }) {
       }`}
     >
       <Deco />
+      {template.tier === "premium" && (
+        <span className="absolute right-1.5 top-1.5 z-10 rounded-full bg-black/70 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-amber-300 backdrop-blur">
+          ✦ Premium
+        </span>
+      )}
       <div className="absolute left-1/2 top-[34%] -translate-x-1/2 -translate-y-1/2 text-5xl drop-shadow">
         {template.cover.emoji}
       </div>

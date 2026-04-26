@@ -9,4 +9,5 @@ export const CATEGORIES = [
   { id: "thanks", label: "Thank You" },
   { id: "miss", label: "Miss You" },
   { id: "sorry", label: "Sorry" },
+  { id: "anime", label: "Anime ⚡" },
 ];
