@@ -1,8 +1,11 @@
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { CATEGORIES } from "../lib/categories";
 import { LANGUAGES } from "../lib/languages";
 import { getPalette } from "../templates/palettes";
 import { getDecoration } from "./decorations";
+
+const PAGE_SIZE = 30;
 
 export default function TemplateGallery({
   templates,
@@ -15,6 +18,13 @@ export default function TemplateGallery({
   selectedId,
   onSelect,
 }) {
+  const [visible, setVisible] = useState(PAGE_SIZE);
+
+  // Reset pagination when any filter changes
+  useEffect(() => {
+    setVisible(PAGE_SIZE);
+  }, [category, languages, query]);
+
   const toggleLang = (id) => {
     if (languages.includes(id)) {
       onLanguagesChange(languages.filter((l) => l !== id));
@@ -22,6 +32,9 @@ export default function TemplateGallery({
       onLanguagesChange([...languages, id]);
     }
   };
+
+  const shown = templates.slice(0, visible);
+  const hasMore = visible < templates.length;
 
   return (
     <>
@@ -97,16 +110,35 @@ export default function TemplateGallery({
             No templates match your filters. Try clearing search, languages, or category.
           </div>
         ) : (
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-            {templates.map((t) => (
-              <TemplateCard
-                key={t.id}
-                template={t}
-                selected={selectedId === t.id}
-                onSelect={() => onSelect(t.id)}
-              />
-            ))}
-          </div>
+          <>
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+              {shown.map((t) => (
+                <TemplateCard
+                  key={t.id}
+                  template={t}
+                  selected={selectedId === t.id}
+                  onSelect={() => onSelect(t.id)}
+                />
+              ))}
+            </div>
+            {hasMore ? (
+              <div className="mt-4 flex flex-col items-center gap-2">
+                <button
+                  onClick={() => setVisible((v) => v + PAGE_SIZE)}
+                  className="rounded-full bg-white px-5 py-2 text-sm font-semibold text-slate-700 shadow-sm ring-1 ring-slate-200 hover:bg-slate-50"
+                >
+                  Show more
+                </button>
+                <span className="text-xs text-slate-400">
+                  Showing {shown.length} of {templates.length}
+                </span>
+              </div>
+            ) : templates.length > PAGE_SIZE ? (
+              <div className="mt-4 text-center text-xs text-slate-400">
+                All {templates.length} shown
+              </div>
+            ) : null}
+          </>
         )}
       </section>
     </>
