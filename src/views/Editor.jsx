@@ -45,6 +45,7 @@ export default function Editor() {
   const [urlStale, setUrlStale] = useState(false);
   const [copied, setCopied] = useState(false);
   const formRef = useRef(null);
+  const tweakRef = useRef(null);
   const messageRef = useRef(null);
   const [highlighted, setHighlighted] = useState(false);
   const [placeholder] = useState(pickPlaceholder);
@@ -122,8 +123,12 @@ export default function Editor() {
   const selectTemplate = (id) => {
     setTemplateId(id);
     requestAnimationFrame(() => {
-      formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-      setTimeout(() => messageRef.current?.focus({ preventScroll: true }), 450);
+      // In Tweak mode, scroll to the tweak panel; otherwise the message form.
+      const target = mode === "tweak" ? tweakRef.current : formRef.current;
+      target?.scrollIntoView({ behavior: "smooth", block: "start" });
+      if (mode !== "tweak") {
+        setTimeout(() => messageRef.current?.focus({ preventScroll: true }), 450);
+      }
     });
     setHighlighted(true);
     setTimeout(() => setHighlighted(false), 1200);
@@ -143,7 +148,7 @@ export default function Editor() {
   };
 
   const generate = () => {
-    let payload = { f, to, m: message };
+    const payload = { f: from, to, m: message };
     if (mode === "scratch" && custom) {
       payload.c = custom;
     } else {
@@ -217,7 +222,7 @@ export default function Editor() {
         )}
 
         {mode === "tweak" && (
-          <div className="mb-6">
+          <div ref={tweakRef} className="mb-6 scroll-mt-4">
             <TweakPanel templateId={templateId} overrides={overrides} onChange={setOverrides} />
           </div>
         )}
