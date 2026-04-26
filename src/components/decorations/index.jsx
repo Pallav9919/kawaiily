@@ -112,10 +112,13 @@ const Diyas = ({ count = 6 }) => (
 const Geometric = () => (
   <Layer>
     <div
-      className="absolute inset-0 opacity-20"
+      className="absolute inset-0"
       style={{
         backgroundImage:
-          "radial-gradient(circle at 20% 20%, #fff 0, transparent 40%), radial-gradient(circle at 80% 30%, #fff 0, transparent 35%), radial-gradient(circle at 50% 80%, #fff 0, transparent 40%)",
+          "radial-gradient(currentColor 1.5px, transparent 1.5px), radial-gradient(currentColor 1.5px, transparent 1.5px)",
+        backgroundSize: "20px 20px, 20px 20px",
+        backgroundPosition: "0 0, 10px 10px",
+        opacity: 0.25,
       }}
     />
   </Layer>
