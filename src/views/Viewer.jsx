@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { getTemplate } from "../templates/registry";
+import { getTemplate, hasTemplate } from "../templates/registry";
 import { getPalette } from "../templates/palettes";
 import { getDecoration } from "../components/decorations";
 import { getReveal } from "../components/animations";
@@ -12,6 +12,32 @@ export default function Viewer({ data }) {
   const [opened, setOpened] = useState(false);
   const [flipped, setFlipped] = useState(false);
   const [hasFlipped, setHasFlipped] = useState(false);
+
+  if (!hasTemplate(data.t)) {
+    return (
+      <div className="flex min-h-full items-center justify-center bg-gradient-to-br from-slate-900 via-rose-900 to-slate-900 p-6">
+        <div className="max-w-md rounded-2xl bg-white/90 p-8 text-center shadow-xl ring-1 ring-white/20 backdrop-blur">
+          <div className="text-5xl">💌</div>
+          <h1 className="mt-3 text-xl font-semibold text-slate-800">
+            This card's design has been retired
+          </h1>
+          <p className="mt-2 text-sm text-slate-600 whitespace-pre-wrap">
+            {data.m}
+          </p>
+          {data.f && (
+            <p className="mt-4 text-xs italic text-slate-500">— {data.f}</p>
+          )}
+          <a
+            href="/"
+            className="mt-6 inline-block rounded-lg bg-rose-500 px-5 py-2 text-sm font-semibold text-white hover:bg-rose-600"
+          >
+            Make your own card
+          </a>
+        </div>
+      </div>
+    );
+  }
+
   const tpl = getTemplate(data.t);
   const coverPal = getPalette(tpl.cover.palette);
   const insidePal = getPalette(tpl.inside.palette);

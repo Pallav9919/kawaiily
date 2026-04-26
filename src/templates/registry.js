@@ -850,3 +850,5 @@ export const TEMPLATES = [
 
 export const getTemplate = (id) =>
   TEMPLATES.find((t) => t.id === id) || TEMPLATES[0];
+
+export const hasTemplate = (id) => TEMPLATES.some((t) => t.id === id);
