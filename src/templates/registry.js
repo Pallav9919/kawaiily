@@ -938,6 +938,134 @@ export const TEMPLATES = [
     inside: { palette: "rose", decoration: "none", font: "font-bangla" },
     reveal: "burst",
   },
+
+  // ---------- GUJARATI ----------
+  {
+    id: "regional-gujarati-janmadin",
+    name: "Janmadin Mubarak",
+    category: "birthday",
+    lang: "gu",
+    cover: {
+      palette: "sunset",
+      decoration: "balloons",
+      titleFont: "font-gujarati",
+      title: "જન્મદિવસ મુબારક",
+      emoji: "🎂",
+    },
+    inside: { palette: "sunset", decoration: "none", font: "font-gujarati" },
+    reveal: "burst",
+  },
+  {
+    id: "regional-gujarati-prem",
+    name: "Prem",
+    category: "love",
+    lang: "gu",
+    cover: {
+      palette: "rose",
+      decoration: "petals",
+      titleFont: "font-gujarati",
+      title: "હું તને પ્રેમ કરું છું",
+      emoji: "❤️",
+    },
+    inside: { palette: "rose", decoration: "none", font: "font-gujarati" },
+    reveal: "burst",
+  },
+
+  // ---------- KANNADA ----------
+  {
+    id: "regional-kannada-hutthabbada",
+    name: "Hutthabbada Shubhashaya",
+    category: "birthday",
+    lang: "kn",
+    cover: {
+      palette: "sunset",
+      decoration: "confetti",
+      titleFont: "font-kannada",
+      title: "ಹುಟ್ಟುಹಬ್ಬದ ಶುಭಾಶಯಗಳು",
+      emoji: "🎉",
+    },
+    inside: { palette: "sunset", decoration: "none", font: "font-kannada" },
+    reveal: "burst",
+  },
+  {
+    id: "regional-kannada-preethi",
+    name: "Preethi",
+    category: "love",
+    lang: "kn",
+    cover: {
+      palette: "lavender",
+      decoration: "hearts",
+      titleFont: "font-kannada",
+      title: "ನಿನ್ನನ್ನು ಪ್ರೀತಿಸುತ್ತೇನೆ",
+      emoji: "💞",
+    },
+    inside: { palette: "lavender", decoration: "none", font: "font-kannada" },
+    reveal: "burst",
+  },
+
+  // ---------- TELUGU ----------
+  {
+    id: "regional-telugu-puttinarojushubhakanksha",
+    name: "Puttinaroju Shubhakanksha",
+    category: "birthday",
+    lang: "te",
+    cover: {
+      palette: "mint",
+      decoration: "balloons",
+      titleFont: "font-telugu",
+      title: "పుట్టినరోజు శుభాకాంక్షలు",
+      emoji: "🎈",
+    },
+    inside: { palette: "mint", decoration: "none", font: "font-telugu" },
+    reveal: "rise",
+  },
+  {
+    id: "regional-telugu-prema",
+    name: "Prema",
+    category: "love",
+    lang: "te",
+    cover: {
+      palette: "rose",
+      decoration: "rose-rain",
+      titleFont: "font-telugu",
+      title: "నిన్ను ప్రేమిస్తున్నాను",
+      emoji: "❤️",
+    },
+    inside: { palette: "rose", decoration: "none", font: "font-telugu" },
+    reveal: "burst",
+  },
+
+  // ---------- PUNJABI (GURMUKHI) ----------
+  {
+    id: "regional-punjabi-janamdin",
+    name: "Janamdin",
+    category: "birthday",
+    lang: "pa",
+    cover: {
+      palette: "sunset",
+      decoration: "confetti",
+      titleFont: "font-gurmukhi",
+      title: "ਜਨਮਦਿਨ ਮੁਬਾਰਕ",
+      emoji: "🎂",
+    },
+    inside: { palette: "sunset", decoration: "none", font: "font-gurmukhi" },
+    reveal: "burst",
+  },
+  {
+    id: "regional-punjabi-pyaar",
+    name: "Pyaar",
+    category: "love",
+    lang: "pa",
+    cover: {
+      palette: "rose",
+      decoration: "hearts",
+      titleFont: "font-gurmukhi",
+      title: "ਮੈਂ ਤੈਨੂੰ ਪਿਆਰ ਕਰਦਾ ਹਾਂ",
+      emoji: "💘",
+    },
+    inside: { palette: "rose", decoration: "none", font: "font-gurmukhi" },
+    reveal: "burst",
+  },
 ];
 
 export const getTemplate = (id) =>
