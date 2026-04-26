@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { TEMPLATES } from "../templates/registry";
 import { buildShareUrl } from "../lib/hash";
+import { resolveCardConfig, templateAsCustom } from "../lib/resolveCard";
 import { useDraft } from "../lib/useDraft";
 import { pickPlaceholder } from "../lib/placeholders";
 import { getExample } from "../lib/examples";
@@ -10,6 +11,8 @@ import TemplateGallery from "../components/TemplateGallery";
 import MessageForm from "../components/MessageForm";
 import ShareActions from "../components/ShareActions";
 import ModeToggle from "../components/ModeToggle";
+import TweakPanel from "../components/TweakPanel";
+import ScratchPanel, { SCRATCH_STARTER } from "../components/ScratchPanel";
 import { useToast } from "../components/Toast";
 
 export default function Editor() {
@@ -63,6 +66,11 @@ export default function Editor() {
 
   const canGenerate = message.trim().length > 0;
 
+  const resolvedConfig = useMemo(
+    () => resolveCardConfig({ mode, templateId, overrides, custom }),
+    [mode, templateId, overrides, custom]
+  );
+
   useEffect(() => {
     if (!route) return;
     const prevTitle = document.title;
@@ -86,6 +94,13 @@ export default function Editor() {
       setTemplateId(filtered[0].id);
     }
   }, [filtered, templateId]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Seed custom config from the current template when user first enters scratch mode.
+  useEffect(() => {
+    if (mode === "scratch" && !custom) {
+      setCustom(templateAsCustom(templateId));
+    }
+  }, [mode]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // If the current message is still the auto-filled example, refresh it
   // when user switches to a different template (different category/lang).
@@ -128,10 +143,19 @@ export default function Editor() {
   };
 
   const generate = () => {
-    setUrl(buildShareUrl({ t: templateId, f: from, to, m: message }));
+    let payload = { f, to, m: message };
+    if (mode === "scratch" && custom) {
+      payload.c = custom;
+    } else {
+      payload.t = templateId;
+      if (mode === "tweak" && overrides && Object.keys(overrides).length) {
+        payload.o = overrides;
+      }
+    }
+    setUrl(buildShareUrl(payload));
     setUrlStale(false);
     setCopied(false);
-    toast(urlStale ? "Regenerated with new template ✨" : "Link generated ✨");
+    toast(urlStale ? "Regenerated ✨" : "Link generated ✨");
   };
 
   const copy = async () => {
@@ -192,6 +216,18 @@ export default function Editor() {
           />
         )}
 
+        {mode === "tweak" && (
+          <div className="mb-6">
+            <TweakPanel templateId={templateId} overrides={overrides} onChange={setOverrides} />
+          </div>
+        )}
+
+        {mode === "scratch" && (
+          <div className="mb-6">
+            <ScratchPanel custom={custom || SCRATCH_STARTER} onChange={setCustom} />
+          </div>
+        )}
+
         <section
           ref={formRef}
           className={`scroll-mt-4 rounded-2xl bg-white p-6 shadow-sm ring-1 transition-all duration-500 ${
@@ -202,7 +238,7 @@ export default function Editor() {
             <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-400">
               Live preview
             </div>
-            <LivePreview templateId={templateId} to={to} from={from} message={message} />
+            <LivePreview config={resolvedConfig} to={to} from={from} message={message} />
           </div>
 
           <MessageForm

@@ -8,13 +8,17 @@ import Burst from "../components/Burst";
 import Typewriter from "../components/Typewriter";
 import Envelope from "../components/Envelope";
 import { t } from "../lib/i18n";
+import { resolveCardConfig } from "../lib/resolveCard";
 
 export default function Viewer({ data }) {
   const [opened, setOpened] = useState(false);
   const [flipped, setFlipped] = useState(false);
   const [hasFlipped, setHasFlipped] = useState(false);
 
-  if (!hasTemplate(data.t)) {
+  const isScratch = !!data.c;
+  const isTemplateValid = isScratch || hasTemplate(data.t);
+
+  if (!isTemplateValid) {
     return (
       <div className="flex min-h-full items-center justify-center bg-gradient-to-br from-slate-900 via-rose-900 to-slate-900 p-6">
         <div className="max-w-md rounded-2xl bg-white/90 p-8 text-center shadow-xl ring-1 ring-white/20 backdrop-blur">
@@ -39,12 +43,18 @@ export default function Viewer({ data }) {
     );
   }
 
-  const tpl = getTemplate(data.t);
-  const coverPal = getPalette(tpl.cover.palette);
-  const insidePal = getPalette(tpl.inside.palette);
-  const CoverDeco = getDecoration(tpl.cover.decoration);
-  const InsideDeco = getDecoration(tpl.inside.decoration);
-  const reveal = getReveal(tpl.reveal);
+  const cfg = resolveCardConfig({
+    mode: isScratch ? "scratch" : data.o ? "tweak" : "template",
+    templateId: data.t,
+    overrides: data.o,
+    custom: data.c,
+  });
+  const tplLang = cfg.lang || "en";
+  const coverPal = getPalette(cfg.cover.palette);
+  const insidePal = getPalette(cfg.inside.palette);
+  const CoverDeco = getDecoration(cfg.cover.decoration);
+  const InsideDeco = getDecoration(cfg.inside.decoration);
+  const reveal = getReveal(cfg.reveal);
 
   const handleFlip = () => {
     setFlipped((f) => !f);
@@ -70,13 +80,13 @@ export default function Viewer({ data }) {
               >
                 <Face className={`${coverPal.cover} flex flex-col items-center justify-center`}>
                   <CoverDeco />
-                  <div className="relative text-7xl drop-shadow">{tpl.cover.emoji}</div>
-                  <h2 className={`relative mt-6 px-4 text-center text-4xl font-bold ${tpl.cover.titleFont}`}>
-                    {tpl.cover.title}
+                  <div className="relative text-7xl drop-shadow">{cfg.cover.emoji}</div>
+                  <h2 className={`relative mt-6 px-4 text-center text-4xl font-bold ${cfg.cover.titleFont}`}>
+                    {cfg.cover.title}
                   </h2>
                   {data.to && (
                     <p className="relative mt-2 text-center text-lg opacity-90">
-                      {t(tpl.lang).forX(data.to)}
+                      {t(tplLang).forX(data.to)}
                     </p>
                   )}
                   <p className="absolute bottom-6 text-xs uppercase tracking-widest opacity-70">
@@ -86,10 +96,10 @@ export default function Viewer({ data }) {
                 <Face back className={`${insidePal.inside} flex flex-col p-8`}>
                   <InsideDeco />
                   <div className={`relative text-sm font-semibold ${insidePal.accent}`}>
-                    {data.to ? t(tpl.lang).dearX(data.to) : t(tpl.lang).hello}
+                    {data.to ? t(tplLang).dearX(data.to) : t(tplLang).hello}
                   </div>
                   <p
-                    className={`kawaiily-scroll relative mt-4 flex-1 overflow-auto whitespace-pre-wrap text-lg leading-relaxed ${tpl.inside.font}`}
+                    className={`kawaiily-scroll relative mt-4 flex-1 overflow-auto whitespace-pre-wrap text-lg leading-relaxed ${cfg.inside.font}`}
                   >
                     {flipped && !hasFlipped ? (
                       <Typewriter text={data.m} onDone={() => setHasFlipped(true)} />
