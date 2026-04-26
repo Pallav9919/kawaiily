@@ -108,10 +108,14 @@ export default function Editor() {
     prevModeRef.current = mode;
   }, [mode]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // If the message is still an auto-filled example, refresh it when the user changes
+  // what they're designing (template, or in scratch mode: category/language).
   useEffect(() => {
     if (!isExample) return;
-    const tpl = TEMPLATES.find((t) => t.id === templateId);
-    const example = getExample(tpl?.category, tpl?.lang, tpl?.id);
+    const cat = resolvedConfig?.cat;
+    const lang = resolvedConfig?.lang;
+    const tplId = mode === "scratch" ? undefined : templateId;
+    const example = getExample(cat, lang, tplId);
     if (example === message) return;
     setDraft((d) => ({ ...d, message: example, isExample: true }));
     requestAnimationFrame(() => {
@@ -121,13 +125,18 @@ export default function Editor() {
         el.style.height = Math.min(el.scrollHeight, 400) + "px";
       }
     });
-  }, [templateId]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [templateId, custom?.cat, custom?.lang, mode]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const selectTemplate = (id) => setTemplateId(id);
 
   const tryExample = () => {
-    const tpl = TEMPLATES.find((t) => t.id === templateId);
-    const example = getExample(tpl?.category, tpl?.lang, tpl?.id);
+    // Use the resolved card's category/lang so Scratch mode picks examples
+    // matching what the user is actually designing, not the base template.
+    const cat = resolvedConfig?.cat;
+    const lang = resolvedConfig?.lang;
+    // Only use template-id for occasion detection in Template/Tweak modes.
+    const tplId = mode === "scratch" ? undefined : templateId;
+    const example = getExample(cat, lang, tplId);
     setDraft((d) => ({ ...d, message: example, isExample: true }));
     requestAnimationFrame(() => {
       const el = messageRef.current;
