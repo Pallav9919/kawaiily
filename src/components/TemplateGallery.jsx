@@ -40,19 +40,27 @@ export default function TemplateGallery({
     <>
       <section className="mb-4">
         <div className="flex flex-wrap gap-2">
-          {CATEGORIES.map((c) => (
-            <button
-              key={c.id}
-              onClick={() => onCategoryChange(c.id)}
-              className={`rounded-full px-4 py-1.5 text-sm font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-400 ${
-                category === c.id
-                  ? "bg-slate-900 text-white"
-                  : "bg-white text-slate-700 ring-1 ring-slate-200 hover:bg-slate-50"
-              }`}
-            >
-              {c.label}
-            </button>
-          ))}
+          {CATEGORIES.map((c) => {
+            const isAnime = c.id === "anime";
+            const selected = category === c.id;
+            return (
+              <button
+                key={c.id}
+                onClick={() => onCategoryChange(c.id)}
+                className={`rounded-full px-4 py-1.5 text-sm font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-400 ${
+                  isAnime
+                    ? selected
+                      ? "bg-gradient-to-r from-red-700 via-black to-red-700 text-amber-300 shadow-lg ring-2 ring-amber-400/60"
+                      : "bg-gradient-to-r from-red-900 via-black to-red-900 text-amber-300 shadow-md ring-1 ring-amber-500/40 hover:ring-amber-400"
+                    : selected
+                    ? "bg-slate-900 text-white"
+                    : "bg-white text-slate-700 ring-1 ring-slate-200 hover:bg-slate-50"
+                }`}
+              >
+                {c.label}
+              </button>
+            );
+          })}
         </div>
         <div className="mt-2 flex flex-wrap items-center gap-2">
           <span className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">

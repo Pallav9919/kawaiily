@@ -202,31 +202,15 @@ export default function Editor() {
   };
 
   return (
-    <div
-      className={`min-h-full p-6 pb-24 transition-colors duration-700 ${
-        category === "anime"
-          ? "bg-gradient-to-b from-black via-red-950 to-zinc-900"
-          : "bg-gradient-to-b from-rose-50 via-white to-indigo-50"
-      }`}
-    >
+    <div className="min-h-full bg-gradient-to-b from-rose-50 via-white to-indigo-50 p-6 pb-24">
       <div className="mx-auto max-w-3xl">
         <header className="mb-6 text-center">
-          <h1
-            className={`text-4xl font-bold tracking-tight transition-colors ${
-              category === "anime" ? "text-red-200" : "text-slate-800"
-            }`}
-          >
+          <h1 className="text-4xl font-bold tracking-tight text-slate-800">
             {route ? route.h1 : "Kawaiily 💌"}
           </h1>
-          <p
-            className={`mt-2 transition-colors ${
-              category === "anime" ? "text-red-300/80" : "text-slate-600"
-            }`}
-          >
+          <p className="mt-2 text-slate-600">
             {route
               ? "Pick a design, write your note, share the link."
-              : category === "anime"
-              ? "Premium tier. Handle with care."
               : "Create a personalised card and share with a link. No sign-up."}
           </p>
         </header>
