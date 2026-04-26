@@ -89,7 +89,7 @@ export default function Editor() {
 
   const tryExample = () => {
     const tpl = TEMPLATES.find((t) => t.id === templateId);
-    setMessage(getExample(tpl?.category));
+    setMessage(getExample(tpl?.category, tpl?.lang));
     requestAnimationFrame(() => {
       const el = messageRef.current;
       if (el) {
