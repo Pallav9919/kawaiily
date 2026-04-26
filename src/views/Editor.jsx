@@ -191,11 +191,17 @@ export default function Editor() {
             <textarea
               ref={messageRef}
               value={message}
-              onChange={(e) => setMessage(e.target.value)}
+              onChange={(e) => {
+                setMessage(e.target.value);
+                // auto-resize up to a cap
+                const el = e.target;
+                el.style.height = "auto";
+                el.style.height = Math.min(el.scrollHeight, 400) + "px";
+              }}
               rows={5}
               maxLength={1500}
               placeholder={placeholder}
-              className="w-full resize-none rounded-lg border border-slate-300 px-3 py-2 text-base text-slate-800 outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-200"
+              className="kawaiily-scroll w-full resize-none rounded-lg border border-slate-300 px-3 py-2 text-base text-slate-800 outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-200"
             />
             <div className="mt-1 flex justify-between text-xs text-slate-400">
               <span>{!canGenerate && message.length === 0 ? "Write a message to enable the share link" : "\u00A0"}</span>

@@ -68,7 +68,7 @@ export default function Viewer({ data }) {
                       : "Hello,"}
                   </div>
                   <p
-                    className={`relative mt-4 flex-1 overflow-auto whitespace-pre-wrap text-lg leading-relaxed ${tpl.inside.font}`}
+                    className={`kawaiily-scroll relative mt-4 flex-1 overflow-auto whitespace-pre-wrap text-lg leading-relaxed ${tpl.inside.font}`}
                   >
                     {flipped && !hasFlipped ? (
                       <Typewriter text={data.m} onDone={() => setHasFlipped(true)} />
