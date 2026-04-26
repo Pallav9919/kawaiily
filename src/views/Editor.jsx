@@ -355,6 +355,13 @@ function Stepper({ step, mode, onGoTo, canGoNext }) {
 }
 
 function StickyNext({ hint, label, disabled, onClick }) {
+  useEffect(() => {
+    // Approximate bar height — enough to clear MadeBy. Adjust if bar size changes.
+    document.documentElement.style.setProperty("--sticky-bar-h", "64px");
+    return () => {
+      document.documentElement.style.removeProperty("--sticky-bar-h");
+    };
+  }, []);
   return (
     <div className="fixed inset-x-0 bottom-0 z-40 border-t border-slate-200 bg-white/95 p-3 shadow-lg backdrop-blur">
       <div className="mx-auto flex max-w-3xl items-center justify-between gap-3">
