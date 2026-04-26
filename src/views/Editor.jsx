@@ -102,6 +102,12 @@ export default function Editor() {
     }
   }, [mode]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // When switching modes, clamp step to a valid one for that mode.
+  useEffect(() => {
+    const last = mode === "tweak" ? 3 : 2;
+    if (step > last) setStep(last);
+  }, [mode]); // eslint-disable-line react-hooks/exhaustive-deps
+
   useEffect(() => {
     if (!isExample) return;
     const tpl = TEMPLATES.find((t) => t.id === templateId);
@@ -133,6 +139,12 @@ export default function Editor() {
   };
 
   const goToWrite = () => {
+    const last = mode === "tweak" ? 3 : 2;
+    setStep(last);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const goToTweak = () => {
     setStep(2);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -140,6 +152,16 @@ export default function Editor() {
   const goToDesign = () => {
     setStep(1);
     window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const goNext = () => {
+    if (mode === "tweak" && step === 1) return goToTweak();
+    return goToWrite();
+  };
+
+  const goBack = () => {
+    if (step === 3) return goToTweak();
+    return goToDesign();
   };
 
   const generate = () => {
@@ -197,7 +219,18 @@ export default function Editor() {
           </p>
         </header>
 
-        <Stepper step={step} onGoTo={(s) => (s === 1 ? goToDesign() : canProceed && goToWrite())} canGoNext={canProceed} />
+        <Stepper
+          step={step}
+          mode={mode}
+          onGoTo={(s) => {
+            if (s === 1) return goToDesign();
+            if (s === 2 && mode === "tweak") return goToTweak();
+            if ((s === 2 && mode !== "tweak") || s === 3) {
+              if (canProceed) return goToWrite();
+            }
+          }}
+          canGoNext={canProceed}
+        />
 
         {step === 1 && (
           <>
@@ -217,45 +250,63 @@ export default function Editor() {
               />
             )}
 
-            {mode === "tweak" && (
-              <div className="mb-6">
-                <TweakPanel templateId={templateId} overrides={overrides} onChange={setOverrides} />
-              </div>
-            )}
-
             {mode === "scratch" && (
               <div className="mb-6">
                 <ScratchPanel custom={custom || SCRATCH_STARTER} onChange={setCustom} />
               </div>
             )}
 
-            {/* Sticky Next button */}
-            <div className="fixed inset-x-0 bottom-0 z-40 border-t border-slate-200 bg-white/95 p-3 shadow-lg backdrop-blur">
-              <div className="mx-auto flex max-w-3xl items-center justify-between gap-3">
-                <div className="flex-1 text-xs text-slate-500">
-                  {mode === "template" && "Pick a design →"}
-                  {mode === "tweak" && "Tweak as you like →"}
-                  {mode === "scratch" && "Design your own →"}
-                </div>
-                <button
-                  disabled={!canProceed}
-                  onClick={goToWrite}
-                  className="rounded-lg bg-rose-500 px-6 py-2.5 font-semibold text-white shadow hover:bg-rose-600 disabled:cursor-not-allowed disabled:bg-slate-300"
-                >
-                  Next: Write message →
-                </button>
-              </div>
-            </div>
+            <StickyNext
+              hint={
+                mode === "template"
+                  ? "Pick a design →"
+                  : mode === "tweak"
+                  ? "Pick a base template →"
+                  : "Design your own →"
+              }
+              label={mode === "tweak" ? "Next: Customize →" : "Next: Write message →"}
+              disabled={!canProceed}
+              onClick={goNext}
+            />
           </>
         )}
 
-        {step === 2 && (
+        {step === 2 && mode === "tweak" && (
           <>
             <button
               onClick={goToDesign}
               className="mb-4 inline-flex items-center gap-1 text-sm text-slate-600 underline hover:text-slate-900"
             >
-              ← Back to design
+              ← Back to templates
+            </button>
+
+            <section className="mb-6 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+              <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-400">
+                Preview
+              </div>
+              <LivePreview config={resolvedConfig} to={to} from={from} message={message} />
+            </section>
+
+            <div className="mb-6">
+              <TweakPanel templateId={templateId} overrides={overrides} onChange={setOverrides} />
+            </div>
+
+            <StickyNext
+              hint="Tweak as you like →"
+              label="Next: Write message →"
+              disabled={!canProceed}
+              onClick={goNext}
+            />
+          </>
+        )}
+
+        {((step === 2 && mode !== "tweak") || step === 3) && (
+          <>
+            <button
+              onClick={goBack}
+              className="mb-4 inline-flex items-center gap-1 text-sm text-slate-600 underline hover:text-slate-900"
+            >
+              ← Back
             </button>
 
             <section className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
@@ -300,23 +351,53 @@ export default function Editor() {
   );
 }
 
-function Stepper({ step, onGoTo, canGoNext }) {
+function Stepper({ step, mode, onGoTo, canGoNext }) {
+  const steps =
+    mode === "tweak"
+      ? [
+          { n: 1, label: "Pick" },
+          { n: 2, label: "Tweak" },
+          { n: 3, label: "Write & share" },
+        ]
+      : [
+          { n: 1, label: mode === "scratch" ? "Design" : "Pick" },
+          { n: 2, label: "Write & share" },
+        ];
   return (
-    <div className="mb-5 flex items-center justify-center gap-3 text-xs font-semibold uppercase tracking-wide text-slate-500">
-      <button
-        onClick={() => onGoTo(1)}
-        className={`rounded-full px-3 py-1 transition ${step === 1 ? "bg-slate-900 text-white" : "hover:text-slate-800"}`}
-      >
-        1. Design
-      </button>
-      <span className="text-slate-300">—</span>
-      <button
-        onClick={() => onGoTo(2)}
-        disabled={!canGoNext && step !== 2}
-        className={`rounded-full px-3 py-1 transition ${step === 2 ? "bg-slate-900 text-white" : "hover:text-slate-800 disabled:cursor-not-allowed disabled:opacity-50"}`}
-      >
-        2. Write & share
-      </button>
+    <div className="mb-5 flex items-center justify-center gap-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
+      {steps.map((s, i) => (
+        <div key={s.n} className="flex items-center gap-2">
+          {i > 0 && <span className="text-slate-300">—</span>}
+          <button
+            onClick={() => onGoTo(s.n)}
+            disabled={!canGoNext && step < s.n}
+            className={`rounded-full px-3 py-1 transition ${
+              step === s.n
+                ? "bg-slate-900 text-white"
+                : "hover:text-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
+            }`}
+          >
+            {s.n}. {s.label}
+          </button>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function StickyNext({ hint, label, disabled, onClick }) {
+  return (
+    <div className="fixed inset-x-0 bottom-0 z-40 border-t border-slate-200 bg-white/95 p-3 shadow-lg backdrop-blur">
+      <div className="mx-auto flex max-w-3xl items-center justify-between gap-3">
+        <div className="flex-1 text-xs text-slate-500">{hint}</div>
+        <button
+          disabled={disabled}
+          onClick={onClick}
+          className="rounded-lg bg-rose-500 px-6 py-2.5 font-semibold text-white shadow hover:bg-rose-600 disabled:cursor-not-allowed disabled:bg-slate-300"
+        >
+          {label}
+        </button>
+      </div>
     </div>
   );
 }
