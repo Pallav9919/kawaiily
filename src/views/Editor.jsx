@@ -116,16 +116,18 @@ export default function Editor() {
 
   const share = async () => {
     if (!url) return;
-    const shareText = `I made you a little something ✨ ${url}`;
+    // Only send the URL — the OG preview card carries the visual context.
+    // Including text duplicates the URL in WhatsApp/Messenger previews.
     if (navigator.share) {
       try {
-        await navigator.share({ title: "A card for you", text: shareText, url });
+        await navigator.share({ url });
       } catch {
         /* user cancelled */
       }
     } else {
+      // WhatsApp Web fallback — text is the URL by itself
       window.open(
-        `https://wa.me/?text=${encodeURIComponent(shareText)}`,
+        `https://wa.me/?text=${encodeURIComponent(url)}`,
         "_blank",
         "noreferrer"
       );
