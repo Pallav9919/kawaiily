@@ -116,7 +116,7 @@ export default function Editor() {
               <button
                 key={c.id}
                 onClick={() => setCategory(c.id)}
-                className={`rounded-full px-4 py-1.5 text-sm font-medium transition ${
+                className={`rounded-full px-4 py-1.5 text-sm font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-400 ${
                   category === c.id
                     ? "bg-slate-900 text-white"
                     : "bg-white text-slate-700 ring-1 ring-slate-200 hover:bg-slate-50"
@@ -259,7 +259,9 @@ function TemplateCard({ template, selected, onSelect }) {
       whileHover={{ y: -4 }}
       whileTap={{ scale: 0.97 }}
       onClick={onSelect}
-      className={`relative aspect-[3/4] overflow-hidden rounded-xl p-3 text-left shadow-md ring-2 transition hover:shadow-xl ${pal.cover} ${
+      aria-label={`Select template: ${template.name}`}
+      aria-pressed={selected}
+      className={`relative aspect-[3/4] overflow-hidden rounded-xl p-3 text-left shadow-md ring-2 transition hover:shadow-xl focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-rose-300 ${pal.cover} ${
         selected ? "ring-slate-900" : "ring-transparent"
       }`}
     >
@@ -272,8 +274,10 @@ function TemplateCard({ template, selected, onSelect }) {
       >
         {template.cover.title}
       </div>
-      <div className="absolute bottom-2 left-0 right-0 text-center text-[10px] font-semibold uppercase tracking-wide opacity-80">
-        {template.name}
+      <div className="absolute bottom-2 left-0 right-0 text-center">
+        <h3 className="m-0 text-[10px] font-semibold uppercase tracking-wide opacity-80">
+          {template.name}
+        </h3>
       </div>
     </motion.button>
   );
