@@ -62,6 +62,11 @@ export const PALETTES = {
     inside: "bg-zinc-950 text-yellow-100",
     accent: "text-yellow-400",
   },
+  kurama: {
+    cover: "bg-gradient-to-br from-orange-500 via-amber-500 to-yellow-400 text-zinc-900",
+    inside: "bg-gradient-to-br from-orange-100 via-amber-50 to-yellow-100 text-orange-950",
+    accent: "text-orange-700",
+  },
 };
 
 export const getPalette = (id) => PALETTES[id] || PALETTES.rose;
