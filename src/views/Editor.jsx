@@ -7,6 +7,7 @@ import { CATEGORIES } from "../lib/categories";
 import { buildShareUrl } from "../lib/hash";
 import { useDraft } from "../lib/useDraft";
 import { pickPlaceholder } from "../lib/placeholders";
+import { getExample } from "../lib/examples";
 import LivePreview from "../components/LivePreview";
 
 export default function Editor() {
@@ -187,7 +188,28 @@ export default function Editor() {
             <Field label="From" value={from} onChange={setFrom} placeholder="Your name" />
           </div>
           <div className="mt-4">
-            <label className="mb-1 block text-sm font-medium text-slate-700">Message</label>
+            <div className="mb-1 flex items-center justify-between">
+              <label className="block text-sm font-medium text-slate-700">Message</label>
+              <button
+                type="button"
+                onClick={() => {
+                  const tpl = TEMPLATES.find((t) => t.id === templateId);
+                  const example = getExample(tpl?.category);
+                  setMessage(example);
+                  // trigger auto-resize
+                  requestAnimationFrame(() => {
+                    const el = messageRef.current;
+                    if (el) {
+                      el.style.height = "auto";
+                      el.style.height = Math.min(el.scrollHeight, 400) + "px";
+                    }
+                  });
+                }}
+                className="text-xs font-medium text-rose-600 hover:text-rose-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-300 rounded px-1"
+              >
+                Try example ✨
+              </button>
+            </div>
             <textarea
               ref={messageRef}
               value={message}
