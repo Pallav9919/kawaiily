@@ -9,6 +9,7 @@ import LivePreview from "../components/LivePreview";
 import TemplateGallery from "../components/TemplateGallery";
 import MessageForm from "../components/MessageForm";
 import ShareActions from "../components/ShareActions";
+import ModeToggle from "../components/ModeToggle";
 import { useToast } from "../components/Toast";
 
 export default function Editor() {
@@ -22,13 +23,20 @@ export default function Editor() {
     to: "",
     message: "",
     isExample: false,
+    mode: "template", // "template" | "tweak" | "scratch"
+    overrides: {}, // for tweak mode
+    custom: null, // for scratch mode
   });
-  const { templateId, from, to, message, isExample } = draft;
+  const { templateId, from, to, message, isExample, mode, overrides, custom } = draft;
   const setTemplateId = (templateId) => setDraft((d) => ({ ...d, templateId }));
   const setFrom = (from) => setDraft((d) => ({ ...d, from }));
   const setTo = (to) => setDraft((d) => ({ ...d, to }));
-  // If user types/edits the message, it's now their own, not an example.
   const setMessage = (message) => setDraft((d) => ({ ...d, message, isExample: false }));
+  const setMode = (mode) => setDraft((d) => ({ ...d, mode }));
+  const setOverrides = (updater) =>
+    setDraft((d) => ({ ...d, overrides: typeof updater === "function" ? updater(d.overrides || {}) : updater }));
+  const setCustom = (updater) =>
+    setDraft((d) => ({ ...d, custom: typeof updater === "function" ? updater(d.custom) : updater }));
 
   const [url, setUrl] = useState("");
   const [urlStale, setUrlStale] = useState(false);
@@ -168,17 +176,21 @@ export default function Editor() {
           </p>
         </header>
 
-        <TemplateGallery
-          templates={filtered}
-          category={category}
-          onCategoryChange={setCategory}
-          languages={languages}
-          onLanguagesChange={setLanguages}
-          query={query}
-          onQueryChange={setQuery}
-          selectedId={templateId}
-          onSelect={selectTemplate}
-        />
+        <ModeToggle mode={mode} onChange={setMode} />
+
+        {mode !== "scratch" && (
+          <TemplateGallery
+            templates={filtered}
+            category={category}
+            onCategoryChange={setCategory}
+            languages={languages}
+            onLanguagesChange={setLanguages}
+            query={query}
+            onQueryChange={setQuery}
+            selectedId={templateId}
+            onSelect={selectTemplate}
+          />
+        )}
 
         <section
           ref={formRef}
