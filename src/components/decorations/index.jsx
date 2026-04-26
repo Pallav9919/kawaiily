@@ -404,37 +404,25 @@ const MangekyoItachi = () => (
       animate={{ rotate: 360 }}
       transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
     >
-      <svg viewBox="0 0 200 200" width="300" height="300" style={{ opacity: 0.7 }}>
+      <svg viewBox="0 0 300 300" width="300" height="300" style={{ opacity: 0.75 }}>
         <defs>
-          <radialGradient id="itachi-iris" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#ef4444" />
-            <stop offset="55%" stopColor="#dc2626" />
-            <stop offset="100%" stopColor="#991b1b" />
+          <radialGradient id="itachi-iris-grad">
+            <stop offset="0" stopColor="#660000" stopOpacity="1" />
+            <stop offset="0.5" stopColor="#c30000" stopOpacity="1" />
+            <stop offset="1" stopColor="#a00000" stopOpacity="1" />
           </radialGradient>
         </defs>
-
-        {/* outer bold black ring */}
-        <circle cx="100" cy="100" r="96" fill="#0a0a0a" />
-        {/* red iris with subtle gradient */}
-        <circle cx="100" cy="100" r="87" fill="url(#itachi-iris)" />
-
-        {/* Itachi's Mangekyō: three curved blades sweeping outward (shuriken shape).
-            Each blade is ~120° apart, starts wide near center, curves to a point at the rim. */}
-        {[0, 120, 240].map((angle) => (
-          <g key={angle} transform={`rotate(${angle} 100 100)`}>
-            <path
-              d="M 100 100
-                 C 82 70, 78 40, 100 18
-                 C 118 35, 124 58, 118 78
-                 C 114 90, 108 96, 100 100 Z"
-              fill="#0a0a0a"
-            />
-          </g>
-        ))}
-
-        {/* center red circle (pupil) */}
-        <circle cx="100" cy="100" r="11" fill="#dc2626" />
-        <circle cx="100" cy="100" r="11" fill="none" stroke="#0a0a0a" strokeWidth="1.5" />
+        <circle
+          cx="150"
+          cy="150"
+          r="145"
+          style={{ fill: "url(#itachi-iris-grad)", stroke: "#000", strokeWidth: 10 }}
+        />
+        <path
+          fill="#000"
+          d="M 177.6,10.7 C 135,68.4 155.4,100.7 179.8,118.5 C 260.9,160.6 274.8,214.5 255.9,244.9 C 237.3,191.9 198,172.4 158.5,194.9 C 86.9,238.6 40.7,231.2 15.7,196.6 C 58.2,203.1 109.1,193.5 107.9,128.3 C 109.5,97.6 111.5,16.6 177.6,10.7 z"
+        />
+        <circle cx="150" cy="150" r="20" fill="#a00000" />
       </svg>
     </motion.div>
   </Layer>
