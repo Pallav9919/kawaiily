@@ -4,6 +4,7 @@ import { buildShareUrl } from "../lib/hash";
 import { useDraft } from "../lib/useDraft";
 import { pickPlaceholder } from "../lib/placeholders";
 import { getExample } from "../lib/examples";
+import { parseCategoryRoute } from "../lib/routes";
 import LivePreview from "../components/LivePreview";
 import TemplateGallery from "../components/TemplateGallery";
 import MessageForm from "../components/MessageForm";
@@ -11,7 +12,8 @@ import ShareActions from "../components/ShareActions";
 import { useToast } from "../components/Toast";
 
 export default function Editor() {
-  const [category, setCategory] = useState("all");
+  const route = typeof window !== "undefined" ? parseCategoryRoute(window.location.pathname) : null;
+  const [category, setCategory] = useState(route?.category || "all");
   const [query, setQuery] = useState("");
   const [draft, setDraft] = useDraft({
     templateId: TEMPLATES[0].id,
@@ -48,6 +50,19 @@ export default function Editor() {
   }, [category, query]);
 
   const canGenerate = message.trim().length > 0;
+
+  useEffect(() => {
+    if (!route) return;
+    const prevTitle = document.title;
+    document.title = route.title;
+    const meta = document.querySelector('meta[name="description"]');
+    const prevDesc = meta?.getAttribute("content");
+    if (meta) meta.setAttribute("content", route.description);
+    return () => {
+      document.title = prevTitle;
+      if (meta && prevDesc != null) meta.setAttribute("content", prevDesc);
+    };
+  }, [route]);
 
   useEffect(() => {
     if (url) setUrlStale(true);
@@ -119,9 +134,13 @@ export default function Editor() {
     <div className="min-h-full bg-gradient-to-b from-rose-50 via-white to-indigo-50 p-6">
       <div className="mx-auto max-w-3xl">
         <header className="mb-8 text-center">
-          <h1 className="text-4xl font-bold tracking-tight text-slate-800">Kawaiily 💌</h1>
+          <h1 className="text-4xl font-bold tracking-tight text-slate-800">
+            {route ? route.h1 : "Kawaiily 💌"}
+          </h1>
           <p className="mt-2 text-slate-600">
-            Create a personalised card and share with a link. No sign-up.
+            {route
+              ? "Pick a design, write your note, share the link. Free, no sign-up."
+              : "Create a personalised card and share with a link. No sign-up."}
           </p>
         </header>
 
