@@ -21,12 +21,14 @@ export default function Editor() {
     from: "",
     to: "",
     message: "",
+    isExample: false,
   });
-  const { templateId, from, to, message } = draft;
+  const { templateId, from, to, message, isExample } = draft;
   const setTemplateId = (templateId) => setDraft((d) => ({ ...d, templateId }));
   const setFrom = (from) => setDraft((d) => ({ ...d, from }));
   const setTo = (to) => setDraft((d) => ({ ...d, to }));
-  const setMessage = (message) => setDraft((d) => ({ ...d, message }));
+  // If user types/edits the message, it's now their own, not an example.
+  const setMessage = (message) => setDraft((d) => ({ ...d, message, isExample: false }));
 
   const [url, setUrl] = useState("");
   const [urlStale, setUrlStale] = useState(false);
@@ -77,6 +79,23 @@ export default function Editor() {
     }
   }, [filtered, templateId]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // If the current message is still the auto-filled example, refresh it
+  // when user switches to a different template (different category/lang).
+  useEffect(() => {
+    if (!isExample) return;
+    const tpl = TEMPLATES.find((t) => t.id === templateId);
+    const example = getExample(tpl?.category, tpl?.lang);
+    if (example === message) return;
+    setDraft((d) => ({ ...d, message: example, isExample: true }));
+    requestAnimationFrame(() => {
+      const el = messageRef.current;
+      if (el) {
+        el.style.height = "auto";
+        el.style.height = Math.min(el.scrollHeight, 400) + "px";
+      }
+    });
+  }, [templateId]); // eslint-disable-line react-hooks/exhaustive-deps
+
   const selectTemplate = (id) => {
     setTemplateId(id);
     requestAnimationFrame(() => {
@@ -89,7 +108,8 @@ export default function Editor() {
 
   const tryExample = () => {
     const tpl = TEMPLATES.find((t) => t.id === templateId);
-    setMessage(getExample(tpl?.category, tpl?.lang));
+    const example = getExample(tpl?.category, tpl?.lang);
+    setDraft((d) => ({ ...d, message: example, isExample: true }));
     requestAnimationFrame(() => {
       const el = messageRef.current;
       if (el) {
