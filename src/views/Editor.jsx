@@ -9,6 +9,7 @@ import { useDraft } from "../lib/useDraft";
 import { pickPlaceholder } from "../lib/placeholders";
 import { getExample } from "../lib/examples";
 import LivePreview from "../components/LivePreview";
+import { useToast } from "../components/Toast";
 
 export default function Editor() {
   const [category, setCategory] = useState("all");
@@ -31,6 +32,7 @@ export default function Editor() {
   const messageRef = useRef(null);
   const [highlighted, setHighlighted] = useState(false);
   const [placeholder] = useState(pickPlaceholder);
+  const toast = useToast();
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -74,6 +76,7 @@ export default function Editor() {
   const generate = () => {
     setUrl(buildShareUrl({ t: templateId, f: from, to, m: message }));
     setCopied(false);
+    toast("Link generated ✨");
   };
 
   const copy = async () => {
@@ -81,6 +84,7 @@ export default function Editor() {
     await navigator.clipboard.writeText(url);
     setCopied(true);
     setTimeout(() => setCopied(false), 1800);
+    toast("Link copied to clipboard");
   };
 
   const share = async () => {
