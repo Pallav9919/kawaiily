@@ -1,5 +1,6 @@
 import { lazy, Suspense } from "react";
 import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 import MadeBy from "./components/MadeBy";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ToastProvider } from "./components/Toast";
@@ -23,6 +24,7 @@ export default function App() {
       </ErrorBoundary>
       <MadeBy />
       <Analytics />
+      <SpeedInsights />
     </>
   );
 }
